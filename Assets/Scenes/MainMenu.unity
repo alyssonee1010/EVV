@@ -302,7 +302,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91c0d3d70b2d4288ad5012efd81abb0f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEMainMenuController
+  m_EditorClassIdentifier: Assembly-CSharp::EVVMainMenuController
   mainPanel: {fileID: 200022}
   stageSelectPanel: {fileID: 200102}
   settingsPanel: {fileID: 200202}

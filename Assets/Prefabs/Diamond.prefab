@@ -882,7 +882,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0027c8d5ebb4db8a663b536ab8f99c3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEConstantRotation
+  m_EditorClassIdentifier: Assembly-CSharp::EVVConstantRotation
   degreesPerSecond: -30
 --- !u!1 &3202111304867057637
 GameObject:

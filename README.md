@@ -1,6 +1,6 @@
-# Vikings vs Everyone
+# Everyone vs Vikings
 
-Vikings vs Everyone is a Unity 2D lane-defense game. Players build a defender loadout, place defenders on a tilemap board, collect generated resources, use potions, and stop Viking waves from reaching the chest.
+Everyone vs Vikings is a Unity 2D lane-defense game. Players build a defender loadout, place defenders on a tilemap board, collect generated resources, use potions, and stop Viking waves from reaching the chest.
 
 ## Run The Project
 

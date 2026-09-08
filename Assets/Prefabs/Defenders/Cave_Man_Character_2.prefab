@@ -515,7 +515,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2872673eaef36cd45842ab6b3292e6ca, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEBoardCharacter
+  m_EditorClassIdentifier: Assembly-CSharp::EVVBoardCharacter
   cost: 8
   maxHealth: 100
 --- !u!95 &611986551926976646
@@ -551,7 +551,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 150
   destroyWhenDead: 1
   onTakeDamage:
@@ -568,7 +568,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bee1f306e5027f43a8657f366182449, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHitRecoil
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHitRecoil
   recoilTarget: {fileID: 0}
   applyInWorldSpace: 0
   returnAfterRecoil: 1
@@ -596,7 +596,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f5dc0025ef57f84dacee891b570c41d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEBoardMeleeAttacker
+  m_EditorClassIdentifier: Assembly-CSharp::EVVBoardMeleeAttacker
   attackRange: 3
   attackCooldown: 1.1
   attackDamage: 25
@@ -712,7 +712,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a49d5cab163bbd41adf29b392364bcf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEAnimationSoundPlayer
+  m_EditorClassIdentifier: Assembly-CSharp::EVVAnimationSoundPlayer
   audioSource: {fileID: 0}
   attackSounds:
   - {fileID: 8300000, guid: 0642b72afd5a93d41bac96b338092d52, type: 3}

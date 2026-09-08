@@ -869,7 +869,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 250
   destroyWhenDead: 1
   onTakeDamage:
@@ -886,7 +886,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7463907aaacc2354dbbe0bc8fd073735, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEEnemyVikingWalker
+  m_EditorClassIdentifier: Assembly-CSharp::EVVEnemyVikingWalker
   moveSpeed: 1
   reachDistance: 0.1
   attackStartDistance: 0.8
@@ -1054,7 +1054,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a49d5cab163bbd41adf29b392364bcf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEAnimationSoundPlayer
+  m_EditorClassIdentifier: Assembly-CSharp::EVVAnimationSoundPlayer
   audioSource: {fileID: 2131240238764698144}
   attackSounds:
   - {fileID: 8300000, guid: a13cebecdfb1bb44dab41be90c72db7d, type: 3}
@@ -1090,7 +1090,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bee1f306e5027f43a8657f366182449, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHitRecoil
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHitRecoil
   recoilTarget: {fileID: 2057027390717017962}
   applyInWorldSpace: 1
   returnAfterRecoil: 0
