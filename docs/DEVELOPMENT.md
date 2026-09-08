@@ -6,7 +6,7 @@ Use Unity 6000.5.0f1 or a compatible Unity 6 editor. MainMenu.unity is the entry
 
 For a quick C# verification outside Unity, run:
 
-    dotnet build EveryoneVsVikings.slnx
+    dotnet build EVV.slnx
 
 Unity remains the source of truth for scene serialization, asset imports, animation events, and Play Mode behavior.
 
