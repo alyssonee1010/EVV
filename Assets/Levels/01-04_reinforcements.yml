@@ -44,7 +44,7 @@ waves:
   - time_offset: 12
     spawns:
       - unit: viking
-        count: 5
+        count: 6
         duration: 5
 
   - time_offset: 16
@@ -61,34 +61,34 @@ waves:
   - time_offset: 10
     spawns:
       - unit: viking
-        count: 4
+        count: 6
         duration: 5
 
   - time_offset: 16
     tier: flag
     spawns:
       - unit: viking
-        count: 6
+        count: 8
         duration: 4
       - unit: naked_viking
-        count: 2
+        count: 3
         time_offset: 5
         duration: 0
 
   - time_offset: 12
     spawns:
       - unit: viking
-        count: 4
+        count: 8
         duration: 5
 
   - time_offset: 10
     tier: final
     spawns:
       - unit: viking
-        count: 8
+        count: 15
         duration: 8
       - unit: naked_viking
-        count: 3
+        count: 6
         time_offset: 5
         duration: 5
 
