@@ -6443,6 +6443,10 @@ MonoBehaviour:
     prefab: {fileID: 6627431872690101012, guid: 5b721ba916b85f94e8f3cb7bf4ccd288, type: 3}
     maxHealth: 140
     moveSpeed: 0.9
+  - unitId: arrogant_viking
+    prefab: {fileID: 1586307272624819258, guid: 4e073c48322896040b6f4e35d550dd94, type: 3}
+    maxHealth: 140
+    moveSpeed: 0.9
   flagWaveMessage: ELITE WAVE INCOMING
   finalWaveMessage: FINAL WAVE
   levelCompleteMessage: LEVEL COMPLETE

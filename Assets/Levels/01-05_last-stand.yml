@@ -37,7 +37,7 @@ waves:
 
   - time_offset: 12
     spawns:
-      - unit: viking
+      - unit: arrogant_viking
         count: 4
         duration: 5
 
@@ -50,8 +50,11 @@ waves:
   - time_offset: 16
     tier: flag
     spawns:
+      - unit: arrogant_viking
+        count: 4
+        duration: 4
       - unit: viking
-        count: 6
+        count: 3
         duration: 4
       - unit: naked_viking
         count: 2
