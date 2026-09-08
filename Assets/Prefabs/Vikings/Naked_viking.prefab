@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
-  maxHealth: 100
+  maxHealth: 120
   destroyWhenDead: 1
   onTakeDamage:
     m_PersistentCalls:
@@ -302,7 +302,7 @@ MonoBehaviour:
   triggerStunAnimation: 1
   animator: {fileID: 5879978050773949081}
   stunTriggerName: Stun
-  stunHitChance: 0.25
+  stunHitChance: 0.444
   stunResistancePercent: 100
   flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}

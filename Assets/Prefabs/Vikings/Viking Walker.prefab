@@ -365,8 +365,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
-  maxHealth: 100
+  maxHealth: 120
   destroyWhenDead: 1
+  onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &5244383168775246441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,7 +385,7 @@ MonoBehaviour:
   moveSpeed: 0.8
   reachDistance: 0.05
   attackStartDistance: 0.8
-  laneTolerance: 0.45
+  depthTolerance: 0.45
   overlapTolerance: 0.1
   attackDamage: 10
   firstAttackDamageMultiplier: 1
@@ -392,9 +395,6 @@ MonoBehaviour:
   fallbackAttackInterval: 1.5
   afterKillLockSeconds: 0.8
   boardDamageOnExit: 1
-  sortingOrderBase: 1000
-  sortingOrderPerRow: 120
-  sortingOrderOffset: 30
 --- !u!61 &4946029505301886133
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -598,6 +598,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ac8180567df1155439de8582b182f0d9, type: 3}
   - {fileID: 8300000, guid: 09d1af0e133d8f94aad19e50c1e3ade9, type: 3}
   pitchRange: {x: 0.95, y: 1.05}
+  collectPitchStart: 1
+  collectPitchMax: 2.5
+  collectPitchStep: 0.1
+  collectPitchResetInterval: 0.4
 --- !u!1 &2124939556821316633
 GameObject:
   m_ObjectHideFlags: 0

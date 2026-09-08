@@ -725,6 +725,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
   maxHealth: 100
   destroyWhenDead: 1
+  onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4736351253359882724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -752,7 +755,7 @@ MonoBehaviour:
   useProjectilePool: 1
   preloadProjectileCount: 6
   maxPooledProjectiles: 24
-  sightRange: 12
+  sightRange: 8
   minimumFireDistance: 0.2
   depthTolerance: 0.45
   playShootAnimation: 1
@@ -780,7 +783,7 @@ MonoBehaviour:
   triggerStunAnimation: 1
   animator: {fileID: -6347679577782153683}
   stunTriggerName: Stun
-  stunHitChance: 0.15
+  stunHitChance: 0
   stunResistancePercent: 25
   flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}

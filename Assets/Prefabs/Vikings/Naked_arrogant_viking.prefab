@@ -870,7 +870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
-  maxHealth: 100
+  maxHealth: 250
   destroyWhenDead: 1
   onTakeDamage:
     m_PersistentCalls:
@@ -887,13 +887,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7463907aaacc2354dbbe0bc8fd073735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VVEEnemyVikingWalker
-  moveSpeed: 1.2
+  moveSpeed: 1
   reachDistance: 0.1
   attackStartDistance: 0.8
   depthTolerance: 0.45
   overlapTolerance: 0.1
   attackDamage: 10
-  firstAttackDamageMultiplier: 2
+  firstAttackDamageMultiplier: 1
   attackRecoilMultiplier: 1
   useAttackAnimationEvents: 1
   fallbackFirstAttackDelay: 0.5
@@ -1101,8 +1101,8 @@ MonoBehaviour:
   triggerStunAnimation: 1
   animator: {fileID: 4053686498181752222}
   stunTriggerName: Stun
-  stunHitChance: 0.101
-  stunResistancePercent: 100
+  stunHitChance: 0.801
+  stunResistancePercent: 200
   flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}
   hitFlashSeconds: 0.08
