@@ -57,6 +57,8 @@ public class VVEBoardGrid : MonoBehaviour
 
     void OnEnable()
     {
+        EnsureVerticalCenterAnchor();
+
         if (TryAdoptExistingCells())
         {
             return;
@@ -155,17 +157,28 @@ public class VVEBoardGrid : MonoBehaviour
         builtContentSignature = ComputeContentSignature();
     }
 
+    // Captures the anchor from the row count the scene was authored with, without touching the
+    // transform. OnEnable adopts the existing tiles and returns before Rebuild() on a normal scene
+    // load, so taking the anchor only from Rebuild() would first read it later, from SetDimensions()
+    // - by which point the board has already shrunk to the level's row count, making the centering
+    // below a no-op that leaves the lanes stuck to the bottom of the screen.
+    void EnsureVerticalCenterAnchor()
+    {
+        if (verticalCenterAnchorInitialized)
+        {
+            return;
+        }
+
+        verticalCenterAnchorY = transform.localPosition.y + BoardHeight / 2f;
+        verticalCenterAnchorInitialized = true;
+    }
+
     // Keeps the board's vertical middle pinned to wherever it was authored (with the original row
-    // count), instead of growing upward from a fixed bottom edge. The anchor is captured once, from
-    // the first Rebuild, so later row-count changes (e.g. per level) recenter around that same point
-    // rather than leaving fewer lanes stuck to the bottom of the screen.
+    // count), instead of growing upward from a fixed bottom edge, so later row-count changes
+    // (e.g. per level) recenter around that same point.
     void ApplyVerticalCentering()
     {
-        if (!verticalCenterAnchorInitialized)
-        {
-            verticalCenterAnchorY = transform.localPosition.y + BoardHeight / 2f;
-            verticalCenterAnchorInitialized = true;
-        }
+        EnsureVerticalCenterAnchor();
 
         Vector3 position = transform.localPosition;
         position.y = verticalCenterAnchorY - BoardHeight / 2f;
