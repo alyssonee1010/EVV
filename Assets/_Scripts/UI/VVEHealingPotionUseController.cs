@@ -10,7 +10,7 @@ public class VVEHealingPotionUseController : MonoBehaviour
     [SerializeField] string scenePotionName = "Healing Potion";
     [SerializeField] string usableUiName = "Usable_UI";
     [SerializeField] string potionCounterTextName = "Healing Potion Counter";
-    [SerializeField, Min(1)] int healAmount = 100;
+    [SerializeField, Min(1)] int healAmount = 300;
     [SerializeField, Min(0.05f)] float clickSearchRadius = 0.55f;
     [SerializeField] VVECharacterTargetHighlight targetHighlight;
     [SerializeField] Color selectedPotionTint = new Color(0.55f, 0.95f, 1f, 0.55f);
