@@ -15,8 +15,7 @@ public class EVVHitRecoil : MonoBehaviour
 
     [Header("Stun Animation")]
     [SerializeField] bool triggerStunAnimation = true;
-    [SerializeField] Animator animator;
-    [SerializeField] string stunTriggerName = "Stun";
+    const string StunTriggerName = "Stun";
 
     [Header("Stun Gameplay")]
     [Range(0f, 1f)]
@@ -25,15 +24,14 @@ public class EVVHitRecoil : MonoBehaviour
     [SerializeField] float stunResistancePercent;
 
     [Header("Hit Feedback")]
-    [SerializeField] bool flashOnHit = true;
     [SerializeField] Color hitFlashTint = new Color(1f, 0.22f, 0.16f, 1f);
-    [Min(0f)]
-    [SerializeField] float hitFlashSeconds = 0.08f;
+    const float HitFlashSeconds = 0.08f;
 
     [Header("Audio")]
     [SerializeField] EVVAnimationSoundPlayer soundPlayer;
 
     EVVHealth health;
+    Animator animator;
     int lastHealth;
     float recoilTimer;
     Vector3 appliedOffset;
@@ -54,10 +52,7 @@ public class EVVHitRecoil : MonoBehaviour
             recoilTarget = transform;
         }
 
-        if (animator == null)
-        {
-            animator = GetComponent<Animator>();
-        }
+        animator = GetComponent<Animator>();
 
         if (soundPlayer == null)
         {
@@ -162,14 +157,13 @@ public class EVVHitRecoil : MonoBehaviour
         if (!triggerStunAnimation
             || currentHealth <= 0
             || animator == null
-            || string.IsNullOrWhiteSpace(stunTriggerName)
-            || !HasAnimatorTrigger(stunTriggerName))
+            || !HasAnimatorTrigger(StunTriggerName))
         {
             return false;
         }
 
-        animator.ResetTrigger(stunTriggerName);
-        animator.SetTrigger(stunTriggerName);
+        animator.ResetTrigger(StunTriggerName);
+        animator.SetTrigger(StunTriggerName);
         return true;
     }
 
@@ -240,7 +234,7 @@ public class EVVHitRecoil : MonoBehaviour
 
     void PlayHitFlash()
     {
-        if (!flashOnHit || hitFlashSeconds <= 0f || !isActiveAndEnabled)
+        if (!isActiveAndEnabled)
         {
             return;
         }
@@ -271,7 +265,7 @@ public class EVVHitRecoil : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(hitFlashSeconds);
+        yield return new WaitForSeconds(HitFlashSeconds);
 
         RestoreHitFlashColors();
         hitFlashRoutine = null;

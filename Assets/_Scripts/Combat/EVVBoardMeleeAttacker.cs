@@ -7,7 +7,7 @@ public class EVVBoardMeleeAttacker : MonoBehaviour
     [SerializeField] float attackRange = 1.1f;
     [SerializeField] float attackCooldown = 1.1f;
     [SerializeField] int attackDamage = 20;
-    [SerializeField] float recoilMultiplier = 1f;
+    [SerializeField] float recoilMultiplier = 0f;
     [SerializeField] Vector2 attackDirection = Vector2.right;
     [FormerlySerializedAs("laneTolerance")]
     [SerializeField, Min(0f)] float depthTolerance = EVVLaneDepth.DefaultDepthTolerance;
