@@ -78,25 +78,25 @@ waves:
         time_offset: 5
         duration: 0
 
-  - time_offset: 12
+  - time_offset: 24
     spawns:
       - unit: viking
-        count: 24
+        count: 20
         duration: 5
 
-  - time_offset: 10
+  - time_offset: 30
     tier: final
     spawns:
       - unit: viking
-        count: 28
-        duration: 8
+        count: 24
+        duration: 25
       - unit: arrogant_viking
-        count: 12
-        duration: 2
+        count: 6
+        duration: 10
       - unit: naked_viking
-        count: 10
+        count: 6
         time_offset: 5
-        duration: 5
+        duration: 10
 
 # Defenders unlocked after clearing this level
 unlocks:
