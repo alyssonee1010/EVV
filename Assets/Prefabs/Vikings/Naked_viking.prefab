@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
-  maxHealth: 120
+  maxHealth: 150
   destroyWhenDead: 1
   onTakeDamage:
     m_PersistentCalls:

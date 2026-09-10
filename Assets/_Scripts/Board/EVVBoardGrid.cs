@@ -19,13 +19,16 @@ public class EVVBoardGrid : MonoBehaviour
     [SerializeField] string sortingLayerName = "Default";
     [SerializeField] int sortingOrder = 0;
 
+    // World Y the board's vertical middle is pinned to, authored per scene (set it to the
+    // gameplay camera's Y to centre the board on screen). Levels change the row count, so
+    // without this a one-lane level would grow up from a fixed bottom edge and sit low.
+    [SerializeField] float verticalCenterY;
+
     readonly List<EVVTile> cells = new List<EVVTile>();
     int builtRows = -1;
     int builtColumns = -1;
     Vector2 builtCellSize = Vector2.zero;
     int builtContentSignature;
-    float verticalCenterAnchorY;
-    bool verticalCenterAnchorInitialized;
 
     public int Rows => rows;
     public int Columns => columns;
@@ -57,8 +60,6 @@ public class EVVBoardGrid : MonoBehaviour
 
     void OnEnable()
     {
-        EnsureVerticalCenterAnchor();
-
         if (TryAdoptExistingCells())
         {
             return;
@@ -157,31 +158,15 @@ public class EVVBoardGrid : MonoBehaviour
         builtContentSignature = ComputeContentSignature();
     }
 
-    // Captures the anchor from the row count the scene was authored with, without touching the
-    // transform. OnEnable adopts the existing tiles and returns before Rebuild() on a normal scene
-    // load, so taking the anchor only from Rebuild() would first read it later, from SetDimensions()
-    // - by which point the board has already shrunk to the level's row count, making the centering
-    // below a no-op that leaves the lanes stuck to the bottom of the screen.
-    void EnsureVerticalCenterAnchor()
-    {
-        if (verticalCenterAnchorInitialized)
-        {
-            return;
-        }
-
-        verticalCenterAnchorY = transform.localPosition.y + BoardHeight / 2f;
-        verticalCenterAnchorInitialized = true;
-    }
-
-    // Keeps the board's vertical middle pinned to wherever it was authored (with the original row
-    // count), instead of growing upward from a fixed bottom edge, so later row-count changes
-    // (e.g. per level) recenter around that same point.
+    // Keeps the board's vertical middle on verticalCenterY, so changing the row count per level
+    // recentres around that point instead of growing up from a fixed bottom edge. The centre is
+    // authored rather than captured from the transform at load: the captured version read whatever
+    // position the board happened to be at, which both centred on the wrong point and went stale
+    // the moment the board was moved in the editor, silently snapping it back on the next rebuild.
     void ApplyVerticalCentering()
     {
-        EnsureVerticalCenterAnchor();
-
         Vector3 position = transform.localPosition;
-        position.y = verticalCenterAnchorY - BoardHeight / 2f;
+        position.y = verticalCenterY - BoardHeight / 2f;
         transform.localPosition = position;
     }
 

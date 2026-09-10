@@ -579,7 +579,7 @@ MonoBehaviour:
   triggerStunAnimation: 1
   animator: {fileID: 611986551926976646}
   stunTriggerName: Stun
-  stunHitChance: 0.303
+  stunHitChance: 0.235
   stunResistancePercent: 100
   flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}

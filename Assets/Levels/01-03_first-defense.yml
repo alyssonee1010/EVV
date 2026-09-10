@@ -55,27 +55,27 @@ waves:
   - time_offset: 10
     spawns:
       - unit: viking
-        count: 6
+        count: 10
         duration: 5
 
   - time_offset: 12
     spawns:
       - unit: viking
-        count: 8
+        count: 12
         duration: 5
   - time_offset: 2
     spawns:
-      - unit: arrogant_viking
-        count: 2
+      - unit: viking
+        count: 12
         duration: 5
   - time_offset: 10
     tier: final
     spawns:
       - unit: viking
-        count: 8
+        count: 12
         duration: 8
       - unit: naked_viking
-        count: 4
+        count: 6
         time_offset: 5
         duration: 5
 

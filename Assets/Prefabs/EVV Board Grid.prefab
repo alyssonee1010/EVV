@@ -55,3 +55,4 @@ MonoBehaviour:
   cellColor: {r: 1, g: 1, b: 1, a: 1}
   sortingLayerName: Default
   sortingOrder: 0
+  verticalCenterY: -2.65

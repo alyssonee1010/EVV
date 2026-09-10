@@ -17,9 +17,9 @@ available_units:
 
 # Wave schedule
 waves:
-  - time_offset: 5
+  - time_offset: 8
     spawns:
-      - unit: viking
+      - unit: arrogant_viking
         count: 1
         duration: 5
 
@@ -47,14 +47,14 @@ waves:
   - time_offset: 12
     spawns:
       - unit: viking
-        count: 6
+        count: 8
         duration: 5
 
   - time_offset: 16
     tier: flag
     spawns:
       - unit: viking
-        count: 6
+        count: 10
         duration: 4
       - unit: naked_viking
         count: 2
@@ -64,14 +64,14 @@ waves:
   - time_offset: 10
     spawns:
       - unit: viking
-        count: 6
+        count: 12
         duration: 5
 
   - time_offset: 16
     tier: flag
     spawns:
       - unit: viking
-        count: 8
+        count: 14
         duration: 4
       - unit: naked_viking
         count: 3
@@ -81,20 +81,20 @@ waves:
   - time_offset: 12
     spawns:
       - unit: viking
-        count: 8
+        count: 24
         duration: 5
 
   - time_offset: 10
     tier: final
     spawns:
       - unit: viking
-        count: 15
+        count: 28
         duration: 8
       - unit: arrogant_viking
-        count: 5
+        count: 12
         duration: 2
       - unit: naked_viking
-        count: 6
+        count: 10
         time_offset: 5
         duration: 5
 
