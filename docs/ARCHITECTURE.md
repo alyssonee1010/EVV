@@ -2,37 +2,37 @@
 
 ## Runtime Flow
 
-1. VVEMainMenuController displays scene-authored menu panels and discovers levels through VVELevelLoader.
-2. VVEPendingLevelSelection carries the selected level id into the shared gameplay scene.
-3. VVELevelSelectUI and VVEDefenderLoadoutUI prepare the loadout and start the selected level.
-4. VVEWaveDirector schedules YAML-authored waves and resolves unit ids to configured enemy prefabs.
+1. EVVMainMenuController displays scene-authored menu panels and discovers levels through EVVLevelLoader.
+2. EVVPendingLevelSelection carries the selected level id into the shared gameplay scene.
+3. EVVLevelSelectUI and EVVDefenderLoadoutUI prepare the loadout and start the selected level.
+4. EVVWaveDirector schedules YAML-authored waves and resolves unit ids to configured enemy prefabs.
 5. PlantPlacementManager handles placement and routes world interactions.
 6. Defenders, enemies, projectiles, pickups, health, and wallet systems communicate through focused components and events.
 7. Level completion persists progress, resets board state, applies unlocks, and advances to the next discovered level.
 
 ## Level And Menu Layer
 
-### VVELevelLoader
+### EVVLevelLoader
 
-Discovers and parses Assets/Levels/*.yml into VVELevelDefinition objects. Discovery order is stage then level.
+Discovers and parses Assets/Levels/*.yml into EVVLevelDefinition objects. Discovery order is stage then level.
 
-### VVEMainMenuController
+### EVVMainMenuController
 
 Controls the scene-authored MainMenu Canvas, including panel transitions, stage-list population, settings, scene hand-off, and the optional defender showcase. Layout and artwork remain scene data.
 
-### VVELevelSelectUI
+### EVVLevelSelectUI
 
-Owns the pre-level and between-level flow inside the gameplay scene. It coordinates the loadout, starts VVEWaveDirector, resets completed levels, applies unlocks, and selects the next level.
+Owns the pre-level and between-level flow inside the gameplay scene. It coordinates the loadout, starts EVVWaveDirector, resets completed levels, applies unlocks, and selects the next level.
 
-### VVEDefenderCatalog, VVEDefenderUnlocks, And VVELevelCompletion
+### EVVDefenderCatalog, EVVDefenderUnlocks, And EVVLevelCompletion
 
-VVEDefenderCatalog is the scene source of truth for defender ids, prefabs, display names, costs, and default unlocks. VVEDefenderUnlocks persists unlocked ids while keeping the current loadout in memory for the game session. VVELevelCompletion persists completed level ids for progression and menu presentation.
+EVVDefenderCatalog is the scene source of truth for defender ids, prefabs, display names, costs, and default unlocks. EVVDefenderUnlocks persists unlocked ids while keeping the current loadout in memory for the game session. EVVLevelCompletion persists completed level ids for progression and menu presentation.
 
-### VVEWaveDirector
+### EVVWaveDirector
 
-Builds lanes from VVETilemapBoard, schedules wave groups, creates configured enemies, tracks living enemies, and emits level start/completion events.
+Builds lanes from EVVTilemapBoard, schedules wave groups, creates configured enemies, tracks living enemies, and emits level start/completion events.
 
-VVEEnemyLaneSpawner is a separate time-ramping spawner and is not the YAML wave scheduler. New level work should use VVEWaveDirector unless a scene intentionally uses the alternate spawner.
+EVVEnemyLaneSpawner is a separate time-ramping spawner and is not the YAML wave scheduler. New level work should use EVVWaveDirector unless a scene intentionally uses the alternate spawner.
 
 ## Board And Input Layer
 
@@ -42,7 +42,7 @@ Coordinates defender selection, placement previews, tile validation, spending, o
 
 The class currently lives in CharPlacementManagement.cs; the mismatch is retained for compatibility and should be corrected in a dedicated rename.
 
-### VVEWorldPointer
+### EVVWorldPointer
 
 Shared utility for:
 
@@ -53,44 +53,44 @@ Shared utility for:
 
 Current consumers are placement pointer conversion, defender removal, board-pickup collection, and healing-potion targeting. Creation uses the shared position but still maps it through the tilemap because it selects a cell rather than an existing object.
 
-### VVETilemapBoard And VVELaneDepth
+### EVVTilemapBoard And EVVLaneDepth
 
-VVETilemapBoard exposes the gameplay grid and tilemap. VVELaneDepth maps lane indices to Z depth and applies gameplay sorting. Pointer distance remains an X/Y operation because Z represents lane/sorting state rather than cursor position.
+EVVTilemapBoard exposes the gameplay grid and tilemap. EVVLaneDepth maps lane indices to Z depth and applies gameplay sorting. Pointer distance remains an X/Y operation because Z represents lane/sorting state rather than cursor position.
 
 ## Defender And Combat Layer
 
-### VVEDefender
+### EVVDefender
 
-Stores placed-cell state, initializes VVEHealth and VVEWorldHealthBar, and applies lane depth/sorting.
+Stores placed-cell state, initializes EVVHealth and EVVWorldHealthBar, and applies lane depth/sorting.
 
-### VVEHealth
+### EVVHealth
 
 Shared health model with damage, healing, death, and health-change events.
 
-### VVEWorldHealthBar
+### EVVWorldHealthBar
 
-Runtime world-space bar that listens to VVEHealth. Defender bars are hidden at full health and appear while damaged.
+Runtime world-space bar that listens to EVVHealth. Defender bars are hidden at full health and appear while damaged.
 
 ### Attack Components
 
-- VVERowProjectileShooter performs lane-aware ranged targeting.
-- VVEBoardMeleeAttacker performs lane-aware melee targeting.
-- VVEDamageProjectile handles projectile movement and damage.
-- VVEHitRecoil handles hit response and stun presentation.
+- EVVRowProjectileShooter performs lane-aware ranged targeting.
+- EVVBoardMeleeAttacker performs lane-aware melee targeting.
+- EVVDamageProjectile handles projectile movement and damage.
+- EVVHitRecoil handles hit response and stun presentation.
 
 ## Enemy Layer
 
-IVVEEnemyLaneWalker defines the contract used by lane scheduling and targeting. VVEEnemyVikingWalker is the current concrete walker and owns movement, defender attacks, death handling, and base damage on exit.
+IEVVEnemyLaneWalker defines the contract used by lane scheduling and targeting. EVVEnemyVikingWalker is the current concrete walker and owns movement, defender attacks, death handling, and base damage on exit.
 
 ## Economy And Pickup Layer
 
-VVEUsableWallet owns resource counts and change events. VVEBoardPickup represents collectible diamonds or healing potions. VVEMinerMiningReward and VVEWizardPotionReward create those pickups, while VVEThrownPickup animates their launch.
+EVVUsableWallet owns resource counts and change events. EVVBoardPickup represents collectible diamonds or healing potions. EVVMinerMiningReward and EVVWizardPotionReward create those pickups, while EVVThrownPickup animates their launch.
 
 ## UI Layer
 
-VVEHealingPotionUseController owns healing-specific state: counter activation, aiming, valid-target filtering, highlighting, spending, healing, and feedback. Generic pointer behavior stays in VVEWorldPointer.
+EVVHealingPotionUseController owns healing-specific state: counter activation, aiming, valid-target filtering, highlighting, spending, healing, and feedback. Generic pointer behavior stays in EVVWorldPointer.
 
-VVEUsableCounterUI, VVELevelProgressUI, and the loadout/select components present wallet, wave, and defender-selection state.
+EVVUsableCounterUI, EVVLevelProgressUI, and the loadout/select components present wallet, wave, and defender-selection state.
 
 ## Legacy Content
 

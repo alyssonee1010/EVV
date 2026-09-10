@@ -2025,7 +2025,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 124533f85a397c14184727c4bde9936c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEPauseMenuController
+  m_EditorClassIdentifier: Assembly-CSharp::EVVPauseMenuController
   canvas: {fileID: 6878504471764740024}
   raycaster: {fileID: 930542614152560977}
   pausePanel: {fileID: 7327846186581069083}

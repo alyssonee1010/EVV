@@ -4,13 +4,13 @@ Read AGENTS.md before changing this project. The project preference is small, si
 
 ## Project
 
-Vikings vs Everyone is a Unity 2D lane-defense game.
+Everyone vs Vikings is a Unity 2D lane-defense game.
 
 - Unity: 6000.5.0f1
 - Entry scene: Assets/Scenes/MainMenu.unity
 - Shared gameplay scene: Assets/Scenes/Level 1.unity
 - Level data: Assets/Levels/*.yml
-- C# verification: dotnet build VikingsVsEveryone.slnx
+- C# verification: dotnet build EVV.slnx
 
 Unity Play Mode remains required for scene, animation, asset-import, and runtime interaction verification.
 
@@ -25,14 +25,14 @@ Unity Play Mode remains required for scene, animation, asset-import, and runtime
 
 ## Important Ownership Rules
 
-- VVELevelLoader parses and discovers level YAML.
-- VVEMainMenuController owns scene-authored menu behavior, not gameplay state.
-- VVELevelSelectUI owns the pre-level and between-level gameplay-scene flow.
-- VVEWaveDirector owns YAML wave scheduling and enemy tracking.
-- VVEDefenderCatalog owns defender id, prefab, cost, and display-name mappings.
-- VVEDefenderUnlocks owns unlock persistence and loadout state.
+- EVVLevelLoader parses and discovers level YAML.
+- EVVMainMenuController owns scene-authored menu behavior, not gameplay state.
+- EVVLevelSelectUI owns the pre-level and between-level gameplay-scene flow.
+- EVVWaveDirector owns YAML wave scheduling and enemy tracking.
+- EVVDefenderCatalog owns defender id, prefab, cost, and display-name mappings.
+- EVVDefenderUnlocks owns unlock persistence and loadout state.
 - PlantPlacementManager owns board placement/removal routing.
-- VVEWorldPointer owns generic mouse-to-world conversion and world hit-testing.
+- EVVWorldPointer owns generic mouse-to-world conversion and world hit-testing.
 - Feature controllers own their target-validity and effect rules.
 
 Do not introduce parallel level loaders, wave schedulers, wallets, health models, or pointer utilities without a demonstrated need.

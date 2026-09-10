@@ -640,7 +640,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2872673eaef36cd45842ab6b3292e6ca, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEBoardCharacter
+  m_EditorClassIdentifier: Assembly-CSharp::EVVBoardCharacter
   cost: 12
   maxHealth: 100
 --- !u!61 &-3986734287907090963
@@ -722,7 +722,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 100
   destroyWhenDead: 1
   onTakeDamage:
@@ -739,7 +739,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd077c0a509254148a6850d2aa2527e1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVERowProjectileShooter
+  m_EditorClassIdentifier: Assembly-CSharp::EVVRowProjectileShooter
   projectilePrefab: {fileID: 6232256427891686088, guid: 96f065991fb406d49b09f769e3f611be, type: 3}
   firePoint: {fileID: 0}
   firePointOffset: {x: 0.75, y: 0.25}
@@ -772,7 +772,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bee1f306e5027f43a8657f366182449, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHitRecoil
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHitRecoil
   recoilTarget: {fileID: 7188385330095936580}
   applyInWorldSpace: 1
   returnAfterRecoil: 1
@@ -897,7 +897,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a49d5cab163bbd41adf29b392364bcf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEAnimationSoundPlayer
+  m_EditorClassIdentifier: Assembly-CSharp::EVVAnimationSoundPlayer
   audioSource: {fileID: 0}
   attackSounds:
   - {fileID: 8300000, guid: 4facb443824f9694fa59ffa5e8fbc5ff, type: 3}

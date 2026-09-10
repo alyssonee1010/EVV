@@ -141,6 +141,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b5e5e056d784871a11d57ab54c95ff4, type: 3}
   m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::VVELevelMusicController
+  m_EditorClassIdentifier: Assembly-CSharp::EVVLevelMusicController
   earlyLevelsMusic: {fileID: 8300000, guid: 819fa9c08099498bb681d1a016380fb6, type: 3}
   laterLevelsMusic: {fileID: 8300000, guid: f98db6e2c4384fd184d948a5fca20a31, type: 3}

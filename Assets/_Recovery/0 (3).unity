@@ -1436,7 +1436,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4049da0031cff7c419ea03e42d4bf77b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEPlacementCharacterSlot
+  m_EditorClassIdentifier: Assembly-CSharp::EVVPlacementCharacterSlot
   placementManager: {fileID: 2096327530}
   characterPrefab: {fileID: 7717818581488313511, guid: b2a5f8995a977be44b74ccb6a24e0368, type: 3}
   cost: 18
@@ -1829,7 +1829,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5dbdba7743f4d648b96182ed254c2a9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHealingPotionUseController
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHealingPotionUseController
   wallet: {fileID: 1822400687}
   potionIcon: {fileID: 2183777183610269246, guid: 955844e52d615d9428ef3da5f5b27d51, type: 3}
   scenePotionName: Healing Potion
@@ -2275,7 +2275,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40f8591b0c19ebc40a63fdecc51682eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEUsableCounterUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableCounterUI
   wallet: {fileID: 1822400687}
   resource: 0
   diamondText: {fileID: 380429068}
@@ -3418,7 +3418,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4117754ee8c5b9489eb8fb2adf5337a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVETilemapBoard
+  m_EditorClassIdentifier: Assembly-CSharp::EVVTilemapBoard
   grid: {fileID: 405667219}
   tilemap: {fileID: 386360410}
   placementOffset: {x: 0, y: 0.18, z: 0}
@@ -3774,7 +3774,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4049da0031cff7c419ea03e42d4bf77b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEPlacementCharacterSlot
+  m_EditorClassIdentifier: Assembly-CSharp::EVVPlacementCharacterSlot
   placementManager: {fileID: 2096327530}
   characterPrefab: {fileID: 2912663917150313109, guid: 31605c3f50d21834685a49adc791bce8, type: 3}
   cost: 30
@@ -4108,7 +4108,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4049da0031cff7c419ea03e42d4bf77b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEPlacementCharacterSlot
+  m_EditorClassIdentifier: Assembly-CSharp::EVVPlacementCharacterSlot
   placementManager: {fileID: 2096327530}
   characterPrefab: {fileID: 7992456318929058983, guid: 1b49ac1e5afbcc24ea1e19b84b6e8f91, type: 3}
   cost: 12
@@ -5626,7 +5626,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40f8591b0c19ebc40a63fdecc51682eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEUsableCounterUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableCounterUI
   wallet: {fileID: 1822400687}
   resource: 0
   diamondText: {fileID: 730514187}
@@ -5876,7 +5876,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4049da0031cff7c419ea03e42d4bf77b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEPlacementCharacterSlot
+  m_EditorClassIdentifier: Assembly-CSharp::EVVPlacementCharacterSlot
   placementManager: {fileID: 2096327530}
   characterPrefab: {fileID: 6013597141670104860, guid: 50eadb4a5a894e64eabc7ab18c47e03e, type: 3}
   cost: 12
@@ -6026,7 +6026,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 5
   destroyWhenDead: 0
 --- !u!114 &865357836
@@ -6040,7 +6040,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a1f995ecf32420499616a9790363d22, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEWorldHealthBar
+  m_EditorClassIdentifier: Assembly-CSharp::EVVWorldHealthBar
   localOffset: {x: 0, y: 1.4, z: 0}
   width: 1
   height: 0.11
@@ -6060,7 +6060,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e22e0a58e494489e90072990abc41ecc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEBoardLife
+  m_EditorClassIdentifier: Assembly-CSharp::EVVBoardLife
   startingLife: 5
   defaultDamagePerEnemy: 1
   pauseOnGameOver: 1
@@ -6332,7 +6332,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f3a8c2e914b4d6a9f0c7e2b6a1d4f38, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEWaveDirector
+  m_EditorClassIdentifier: Assembly-CSharp::EVVWaveDirector
   tilemapBoard: {fileID: 405667221}
   walkDirection: 0
   edgePadding: 0
@@ -6365,7 +6365,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b7e2f4a693c04d1eae5f8b3c92d6f1a0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVELevelSelectUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVLevelSelectUI
   placementManager: {fileID: 2096327530}
   waveDirector: {fileID: 999000003}
   cardSize: {x: 2.2, y: 1}
@@ -6385,7 +6385,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c48d1a7f5e6b4c9a8d2f0e3b7c6a5d19, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVELevelProgressUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVLevelProgressUI
   waveDirector: {fileID: 999000003}
   screenAnchorOffset: {x: 0, y: 0.6, z: 0}
   cameraPlaneDistance: 5
@@ -8191,7 +8191,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40f8591b0c19ebc40a63fdecc51682eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEUsableCounterUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableCounterUI
   wallet: {fileID: 1822400687}
   resource: 0
   diamondText: {fileID: 1516144170}
@@ -9280,7 +9280,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30e50ae879b92e6439e895a5dfd0338c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEUsableWallet
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableWallet
   startingDiamonds: 14
   startingHealingPotions: 0
 --- !u!1 &1823812702
@@ -9516,7 +9516,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40f8591b0c19ebc40a63fdecc51682eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEUsableCounterUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableCounterUI
   wallet: {fileID: 1822400687}
   resource: 0
   diamondText: {fileID: 1840978303}
@@ -9806,7 +9806,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40f8591b0c19ebc40a63fdecc51682eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEUsableCounterUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableCounterUI
   wallet: {fileID: 1822400687}
   resource: 0
   diamondText: {fileID: 1919089399}
@@ -10408,7 +10408,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40f8591b0c19ebc40a63fdecc51682eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEUsableCounterUI
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableCounterUI
   wallet: {fileID: 1822400687}
   resource: 0
   diamondText: {fileID: 2018170936}
@@ -11316,7 +11316,7 @@ GameObject:
   - component: {fileID: 3141592655}
   - component: {fileID: 3141592656}
   m_Layer: 0
-  m_Name: VVE Enemy Lane Spawner
+  m_Name: EVV Enemy Lane Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11348,7 +11348,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c48f39debda32a4192d06c3535be944, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEEnemyLaneSpawner
+  m_EditorClassIdentifier: Assembly-CSharp::EVVEnemyLaneSpawner
   board: {fileID: 0}
   tilemapBoard: {fileID: 405667221}
   walkDirection: 0
@@ -11700,7 +11700,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4049da0031cff7c419ea03e42d4bf77b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEPlacementCharacterSlot
+  m_EditorClassIdentifier: Assembly-CSharp::EVVPlacementCharacterSlot
   placementManager: {fileID: 2096327530}
   characterPrefab: {fileID: 4238644571018987754, guid: 85eeeea72e837e04ea2dc19465949b3b, type: 3}
   cost: 8
