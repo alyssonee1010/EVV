@@ -2450,7 +2450,7 @@ MonoBehaviour:
   scenePotionName: Healing Potion
   usableUiName: Usable_UI
   potionCounterTextName: Healing Potion Counter
-  healAmount: 100
+  healAmount: 300
   clickSearchRadius: 0.55
   targetHighlight: {fileID: 328345240}
   selectedPotionTint: {r: 0.55, g: 0.95, b: 1, a: 0.55}
