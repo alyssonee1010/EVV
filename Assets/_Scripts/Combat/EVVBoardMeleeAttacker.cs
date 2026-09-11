@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -13,6 +14,9 @@ public class EVVBoardMeleeAttacker : MonoBehaviour
     [SerializeField, Min(0f)] float depthTolerance = EVVLaneDepth.DefaultDepthTolerance;
     [SerializeField] string attackTriggerName = "Attack";
 
+    [Header("Audio")]
+    [SerializeField] EVVAnimationSoundPlayer soundPlayer;
+
     EVVDefender boardCharacter;
     EVVHitRecoil stunProfile;
     Animator animator;
@@ -24,6 +28,10 @@ public class EVVBoardMeleeAttacker : MonoBehaviour
         boardCharacter = GetComponent<EVVDefender>();
         stunProfile = GetComponent<EVVHitRecoil>();
         animator = GetComponent<Animator>();
+        if (soundPlayer == null)
+        {
+            soundPlayer = GetComponent<EVVAnimationSoundPlayer>();
+        }
     }
 
     void Update()
@@ -59,6 +67,13 @@ public class EVVBoardMeleeAttacker : MonoBehaviour
 
         EVVHealth targetHealth = attackTarget.Health;
         targetHealth.TakeDamage(attackDamage, recoilMultiplier);
+        // Played here instead of by an animation event so the impact sound only plays when the swing
+        // actually connects; the animation keeps going after the target has already died.
+        if (soundPlayer != null)
+        {
+            soundPlayer.PlayAttackSounds();
+        }
+
         if (targetHealth.IsAlive && stunProfile != null && TryGetEnemyObject(attackTarget, out GameObject targetObject))
         {
             stunProfile.TryStunTarget(targetObject);
@@ -75,11 +90,12 @@ public class EVVBoardMeleeAttacker : MonoBehaviour
         target = null;
         float bestForwardDistance = float.PositiveInfinity;
         Vector2 forward = attackDirection.sqrMagnitude > 0f ? attackDirection.normalized : Vector2.right;
-        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
+        IReadOnlyList<IEVVEnemyLaneWalker> enemies = EVVTargetRegistry.Enemies;
 
-        foreach (MonoBehaviour behaviour in behaviours)
+        for (int i = 0; i < enemies.Count; i++)
         {
-            if (behaviour is not IEVVEnemyLaneWalker enemy || !TryGetEnemyObject(enemy, out GameObject enemyObject))
+            IEVVEnemyLaneWalker enemy = enemies[i];
+            if (!TryGetEnemyObject(enemy, out GameObject enemyObject))
             {
                 continue;
             }

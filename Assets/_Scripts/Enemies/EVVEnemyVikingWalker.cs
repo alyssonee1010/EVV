@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -73,10 +74,13 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
             lastHealth = health.CurrentHealth;
             health.HealthChanged += OnHealthChanged;
         }
+
+        EVVTargetRegistry.Add(this);
     }
 
     void OnDisable()
     {
+        EVVTargetRegistry.Remove(this);
         if (health != null)
         {
             health.HealthChanged -= OnHealthChanged;
@@ -183,9 +187,10 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
     bool TryFindAttackTarget()
     {
-        EVVDefender[] characters = FindObjectsByType<EVVDefender>(FindObjectsInactive.Exclude);
-        foreach (EVVDefender character in characters)
+        IReadOnlyList<EVVDefender> characters = EVVTargetRegistry.Defenders;
+        for (int i = 0; i < characters.Count; i++)
         {
+            EVVDefender character = characters[i];
             if (character == null || !character.isActiveAndEnabled)
             {
                 continue;

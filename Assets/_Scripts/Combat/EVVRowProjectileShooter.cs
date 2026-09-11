@@ -135,11 +135,12 @@ public class EVVRowProjectileShooter : MonoBehaviour
         bestTarget = null;
         float bestForwardDistance = float.PositiveInfinity;
         Vector2 forward = projectileDirection.sqrMagnitude > 0f ? projectileDirection.normalized : Vector2.right;
-        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
+        IReadOnlyList<IEVVEnemyLaneWalker> enemies = EVVTargetRegistry.Enemies;
 
-        foreach (MonoBehaviour behaviour in behaviours)
+        for (int i = 0; i < enemies.Count; i++)
         {
-            if (behaviour is not IEVVEnemyLaneWalker enemy || !TryGetEnemyObject(enemy, out GameObject enemyObject))
+            IEVVEnemyLaneWalker enemy = enemies[i];
+            if (!TryGetEnemyObject(enemy, out GameObject enemyObject))
             {
                 continue;
             }

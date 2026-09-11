@@ -32,7 +32,6 @@ public class EVVHitRecoil : MonoBehaviour
 
     EVVHealth health;
     Animator animator;
-    int lastHealth;
     float recoilTimer;
     Vector3 appliedOffset;
     float currentRecoilMultiplier = 1f;
@@ -67,10 +66,9 @@ public class EVVHitRecoil : MonoBehaviour
             health = GetComponent<EVVHealth>();
         }
 
-        lastHealth = health != null ? health.CurrentHealth : 0;
         if (health != null)
         {
-            health.HealthChanged += OnHealthChanged;
+            health.Damaged += OnDamaged;
         }
     }
 
@@ -91,7 +89,7 @@ public class EVVHitRecoil : MonoBehaviour
 
         if (health != null)
         {
-            health.HealthChanged -= OnHealthChanged;
+            health.Damaged -= OnDamaged;
         }
     }
 
@@ -134,22 +132,17 @@ public class EVVHitRecoil : MonoBehaviour
         ApplyOffset(deltaOffset);
     }
 
-    void OnHealthChanged(EVVHealth changedHealth, int currentHealth)
+    void OnDamaged(EVVHealth damagedHealth, int currentHealth)
     {
-        if (currentHealth < lastHealth)
+        if (!returnAfterRecoil)
         {
-            if (!returnAfterRecoil)
-            {
-                appliedOffset = Vector3.zero;
-            }
-
-            PlayHitSound();
-            PlayHitFlash();
-            currentRecoilMultiplier = changedHealth != null ? changedHealth.LastDamageRecoilMultiplier : 1f;
-            recoilTimer = TotalSeconds;
+            appliedOffset = Vector3.zero;
         }
 
-        lastHealth = currentHealth;
+        PlayHitSound();
+        PlayHitFlash();
+        currentRecoilMultiplier = damagedHealth != null ? damagedHealth.LastDamageRecoilMultiplier : 1f;
+        recoilTimer = TotalSeconds;
     }
 
     bool PlayStunAnimation(int currentHealth)

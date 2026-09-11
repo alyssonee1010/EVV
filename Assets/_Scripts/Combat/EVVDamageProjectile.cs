@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // A projectile carries no gameplay tuning of its own — the shooter that launches it (see
@@ -127,10 +128,11 @@ public class EVVDamageProjectile : MonoBehaviour
             return;
         }
 
-        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
-        foreach (MonoBehaviour behaviour in behaviours)
+        IReadOnlyList<IEVVEnemyLaneWalker> enemies = EVVTargetRegistry.Enemies;
+        for (int i = 0; i < enemies.Count; i++)
         {
-            if (behaviour is not IEVVEnemyLaneWalker enemy || !TryGetEnemyObject(enemy, out GameObject enemyObject))
+            IEVVEnemyLaneWalker enemy = enemies[i];
+            if (!TryGetEnemyObject(enemy, out GameObject enemyObject))
             {
                 continue;
             }

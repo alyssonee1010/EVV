@@ -30,6 +30,16 @@ public class EVVDefender : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        EVVTargetRegistry.Add(this);
+    }
+
+    void OnDisable()
+    {
+        EVVTargetRegistry.Remove(this);
+    }
+
     public void SetCell(Vector2Int cell)
     {
         Cell = cell;
