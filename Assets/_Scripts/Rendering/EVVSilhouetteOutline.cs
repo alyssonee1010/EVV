@@ -9,7 +9,9 @@ using UnityEngine;
 /// Sprites that are not listed in a group form the body and share one outline. Each
 /// group is a limb (an arm with its joint pieces, a leg, the head) that keeps its own
 /// outline where it moves in front of or behind other groups of the same character, while
-/// the pieces inside a group never outline each other.
+/// the pieces inside a group never outline each other. A group that lies on the body
+/// without being a separate limb (the legs of the shorts on the waist piece) can be marked
+/// seamless with the body, so it only outlines against other groups.
 /// </summary>
 [DisallowMultipleComponent]
 public class EVVSilhouetteOutline : MonoBehaviour
@@ -19,6 +21,8 @@ public class EVVSilhouetteOutline : MonoBehaviour
     {
         public string name;
         public SpriteRenderer[] renderers;
+        [Tooltip("No outline where this group meets the body, only where it meets other groups.")]
+        public bool seamlessWithBody;
     }
 
     // The key texture stores the id in 8 bits: 31 character slots x 8 groups.
@@ -28,6 +32,7 @@ public class EVVSilhouetteOutline : MonoBehaviour
 
     static readonly int OutlineIdId = Shader.PropertyToID("_OutlineId");
     static readonly int OutlineOrderId = Shader.PropertyToID("_OutlineOrder");
+    static readonly int OutlineSeamlessId = Shader.PropertyToID("_OutlineSeamless");
     static int nextCharacterSlot;
 
     [Tooltip("Limbs that keep their own outline where they cross other parts of this character. Sprites not listed here form the body.")]
@@ -40,6 +45,7 @@ public class EVVSilhouetteOutline : MonoBehaviour
     readonly List<SpriteRenderer> renderers = new List<SpriteRenderer>();
     readonly List<MaterialPropertyBlock> blocks = new List<MaterialPropertyBlock>();
     readonly List<int> ids = new List<int>();
+    readonly List<bool> seamless = new List<bool>();
     readonly List<int> orders = new List<int>();
 
     void OnEnable()
@@ -49,6 +55,7 @@ public class EVVSilhouetteOutline : MonoBehaviour
         int characterSlot = 1 + nextCharacterSlot % CharacterSlots;
         nextCharacterSlot++;
 
+        Dictionary<SpriteRenderer, Group> groupsByRenderer = new Dictionary<SpriteRenderer, Group>();
         Dictionary<SpriteRenderer, int> groupIndices = new Dictionary<SpriteRenderer, int>();
         int groupCount = groups != null ? Mathf.Min(groups.Length, MaxGroups) : 0;
         for (int i = 0; i < groupCount; i++)
@@ -63,6 +70,7 @@ public class EVVSilhouetteOutline : MonoBehaviour
                 if (renderer != null)
                 {
                     groupIndices[renderer] = i + 1;
+                    groupsByRenderer[renderer] = groups[i];
                 }
             }
         }
@@ -75,9 +83,11 @@ public class EVVSilhouetteOutline : MonoBehaviour
             }
 
             groupIndices.TryGetValue(renderer, out int groupIndex);
+            groupsByRenderer.TryGetValue(renderer, out Group group);
             renderers.Add(renderer);
             blocks.Add(new MaterialPropertyBlock());
             ids.Add(characterSlot * (MaxGroups + 1) + groupIndex);
+            seamless.Add(group != null && group.seamlessWithBody);
             orders.Add(int.MinValue);
         }
 
@@ -99,6 +109,7 @@ public class EVVSilhouetteOutline : MonoBehaviour
         renderers.Clear();
         blocks.Clear();
         ids.Clear();
+        seamless.Clear();
         orders.Clear();
     }
 
@@ -148,6 +159,7 @@ public class EVVSilhouetteOutline : MonoBehaviour
             MaterialPropertyBlock block = blocks[i];
             block.SetFloat(OutlineIdId, ids[i]);
             block.SetFloat(OutlineOrderId, orders[i]);
+            block.SetFloat(OutlineSeamlessId, seamless[i] ? 1f : 0f);
             renderer.SetPropertyBlock(block);
         }
     }
