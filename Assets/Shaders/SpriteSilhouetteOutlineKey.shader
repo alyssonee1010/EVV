@@ -1,8 +1,8 @@
 // Override shader used by EVVSilhouetteOutlineFeature to render the "key" texture the
 // outline is computed from. Every sprite of the sorting layer writes how close it is to
-// the camera (R, lane depth), its outline id (G, 0 for sprites without an outline), its
-// sorting order (B) and whether it is seamless with the body of its character (A). Those
-// three arrive per renderer through the MaterialPropertyBlock that EVVSilhouetteOutline sets.
+// the camera (R, lane depth), its outline id (G, 0 for sprites without an outline) and
+// its sorting order (B). Outline id and sorting order arrive per renderer through the
+// MaterialPropertyBlock that EVVSilhouetteOutline sets.
 Shader "Hidden/Sprites/Silhouette Outline Key"
 {
 	Properties
@@ -11,7 +11,6 @@ Shader "Hidden/Sprites/Silhouette Outline Key"
 		_Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.5
 		[PerRendererData] _OutlineId ("Outline Id", Float) = 0
 		[PerRendererData] _OutlineOrder ("Sorting Order", Float) = 0
-		[PerRendererData] _OutlineSeamless ("Seamless With Body", Float) = 0
 	}
 
 	SubShader
@@ -58,7 +57,6 @@ Shader "Hidden/Sprites/Silhouette Outline Key"
 				half _Cutoff;
 				float _OutlineId;
 				float _OutlineOrder;
-				float _OutlineSeamless;
 			CBUFFER_END
 
 			// Same vertex setup as URP's Sprite-Unlit-Default, so skinned and flipped sprites match the main render.
@@ -89,7 +87,7 @@ Shader "Hidden/Sprites/Silhouette Outline Key"
 				half closeness = saturate(0.5 - input.alphaDepth.y * 0.05);
 				half id = _OutlineId / 255.0;
 				half order = (clamp(_OutlineOrder, -128.0, 127.0) + 128.0) / 255.0;
-				return half4(closeness, id, order, _OutlineSeamless);
+				return half4(closeness, id, order, 1);
 			}
 			ENDHLSL
 		}

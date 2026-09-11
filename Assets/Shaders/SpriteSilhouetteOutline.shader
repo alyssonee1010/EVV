@@ -5,7 +5,7 @@
 // outlined part, over the pixels that part is in front of: the background, sprites in
 // farther lanes, and parts of the same character with a lower sorting order that belong
 // to another limb group. Pixels of the same group never outline each other, so a rig's
-// joint pieces stay seamless; groups flagged seamless with the body also skip the body.
+// joint pieces stay seamless.
 Shader "Hidden/Sprites/Silhouette Outline"
 {
 	SubShader
@@ -111,22 +111,6 @@ Shader "Hidden/Sprites/Silhouette Outline"
 				return abs(other.r - center.r) <= KEY_STEP && other.b > center.b + KEY_STEP;
 			}
 
-			// True when one pixel is the body of a character and the other a group of the same
-			// character that is flagged seamless with the body (key alpha).
-			bool IsSeamless(float4 a, float4 b)
-			{
-				int idA = (int)round(a.g * 255.0);
-				int idB = (int)round(b.g * 255.0);
-				if ((idA >> 3) != (idB >> 3))
-				{
-					return false;
-				}
-
-				bool bodyA = (idA & 7) == 0;
-				bool bodyB = (idB & 7) == 0;
-				return (bodyA && b.a > 0.5) || (bodyB && a.a > 0.5);
-			}
-
 			half4 OutlineFragment(Varyings input) : SV_Target
 			{
 				// The key texture was rendered by this camera into a texture of the same size and
@@ -152,7 +136,7 @@ Shader "Hidden/Sprites/Silhouette Outline"
 					float4 key = SAMPLE_TEXTURE2D_X_LOD(_SilhouetteKeyTex, sampler_PointClamp, uv + offset * _OutlineParams.xy, 0);
 					bool outlined = key.g > KEY_STEP;
 					bool otherGroup = abs(key.g - center.g) > KEY_STEP;
-					if (outlined && otherGroup && !IsSeamless(center, key) && IsInFront(key, center))
+					if (outlined && otherGroup && IsInFront(key, center))
 					{
 						coverage = weight;
 						break;

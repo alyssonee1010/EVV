@@ -1135,27 +1135,22 @@ MonoBehaviour:
     renderers:
     - {fileID: 4632891800443515024}
     - {fileID: 1276376037133639515}
-    seamlessWithBody: 0
   - name: Arm Right
     renderers:
     - {fileID: 3536765371398190914}
     - {fileID: 5659813592678652160}
     - {fileID: 8858353567130732112}
-    seamlessWithBody: 0
   - name: Arm Left
     renderers:
     - {fileID: 5192937380877721486}
     - {fileID: 2603371169351861712}
     - {fileID: 3293486677908578904}
-    seamlessWithBody: 0
   - name: Leg Right
     renderers:
     - {fileID: 3437076163369637181}
-    seamlessWithBody: 0
   - name: Leg Left
     renderers:
     - {fileID: 6724242212268087420}
-    seamlessWithBody: 0
 --- !u!212 &1276376037133639515 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: -7343883669765776913, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
