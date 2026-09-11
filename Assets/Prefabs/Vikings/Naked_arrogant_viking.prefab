@@ -1156,14 +1156,6 @@ MonoBehaviour:
     renderers:
     - {fileID: 6724242212268087420}
     seamlessWithBody: 0
-  - name: Shorts Right
-    renderers:
-    - {fileID: 6260632981948718739}
-    seamlessWithBody: 1
-  - name: Shorts Left
-    renderers:
-    - {fileID: 1806760519460287318}
-    seamlessWithBody: 1
 --- !u!212 &1276376037133639515 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: -7343883669765776913, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
@@ -1172,11 +1164,6 @@ SpriteRenderer:
 --- !u!4 &1668579132952813663 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7168558072217835797, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
-  m_PrefabInstance: {fileID: 838744339730024116}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &1806760519460287318 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: -7876454251824990750, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
   m_PrefabInstance: {fileID: 838744339730024116}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1933948896108058380 stripped
@@ -1232,11 +1219,6 @@ SpriteRenderer:
 --- !u!212 &5659813592678652160 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: -4240029159135141964, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
-  m_PrefabInstance: {fileID: 838744339730024116}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &6260632981948718739 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: -2503459270689843161, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
   m_PrefabInstance: {fileID: 838744339730024116}
   m_PrefabAsset: {fileID: 0}
 --- !u!212 &6724242212268087420 stripped
