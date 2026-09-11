@@ -792,6 +792,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4854243329644022135}
+    - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7015687399585049548}
   m_SourcePrefab: {fileID: 4843985084834002234, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
 --- !u!4 &41565821307691594 stripped
 Transform:
@@ -1099,14 +1102,22 @@ MonoBehaviour:
   recoilOutSeconds: 0.2
   recoilReturnSeconds: 0.2
   triggerStunAnimation: 1
-  animator: {fileID: 4053686498181752222}
-  stunTriggerName: Stun
   stunHitChance: 0.801
   stunResistancePercent: 200
-  flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}
-  hitFlashSeconds: 0.08
   soundPlayer: {fileID: 744236080977626459}
+--- !u!114 &7015687399585049548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883864788841850633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6470ebf45b19de4449a095bc82460372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVSilhouetteOutline
 --- !u!4 &1668579132952813663 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7168558072217835797, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}

@@ -92,6 +92,12 @@ EVVHealingPotionUseController owns healing-specific state: counter activation, a
 
 EVVUsableCounterUI, EVVLevelProgressUI, and the loadout/select components present wallet, wave, and defender-selection state.
 
+## Rendering Layer
+
+EVVSilhouetteOutlineFeature is a 2D renderer feature on Assets/Settings/Renderer2D.asset. It draws one outline around the whole silhouette of every character marked with EVVSilhouetteOutline, for art that has no drawn outline (currently the arrogant Viking). Outline color and width live on the feature.
+
+The feature runs right after the Gameplay sorting layer; the renderer's Camera Sorting Layer Texture is bound to Gameplay only to make that layer its own render batch. It re-renders the Gameplay sprites into a key texture holding each sprite's lane depth and the outlined pixels, then draws the outline only where the character is nearer than the visible sprite, so lane sorting stays correct. EVVSilhouetteOutline tags the character's SpriteRenderers with the Outline rendering layer while it is enabled.
+
 ## Legacy Content
 
 The repository still contains platformer-era scripts such as PlayerController, PhysicsObject, Enemy, Door, and Breakable. They are not part of the lane-defense runtime unless a scene references them.

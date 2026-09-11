@@ -52,6 +52,7 @@ Do not create a separate health or pointer system for one defender.
 2. Add EVVHealth.
 3. Implement IEVVEnemyLaneWalker or reuse EVVEnemyVikingWalker.
 4. Add the collider, renderers, animator, and required animation events.
+   If the art has no drawn outline, add EVVSilhouetteOutline to the prefab root so the silhouette outline is rendered around the whole body.
 5. Register a stable unit id and prefab in EVVWaveDirector's unit options.
 6. Reference that id from level YAML.
 7. Test spawning, lane movement, defender attacks, death, director tracking, and base damage on exit.

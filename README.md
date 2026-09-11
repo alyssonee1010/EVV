@@ -38,6 +38,7 @@ MainMenu is the build entry point. All selected levels run inside Assets/Scenes/
 | Assets/_Scripts/Levels | Level loading, waves, unlocks, and loadouts |
 | Assets/_Scripts/Pickups | Resource generation and collectible pickups |
 | Assets/_Scripts/Placement | Placement, removal, and gameplay click routing |
+| Assets/_Scripts/Rendering | Silhouette outline renderer feature and its character marker |
 | Assets/_Scripts/UI | Menus, counters, potion presentation, and health bars |
 
 ## Documentation

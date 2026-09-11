@@ -34,6 +34,7 @@ Unity Play Mode remains required for scene, animation, asset-import, and runtime
 - PlantPlacementManager owns board placement/removal routing.
 - EVVWorldPointer owns generic mouse-to-world conversion and world hit-testing.
 - Feature controllers own their target-validity and effect rules.
+- EVVSilhouetteOutlineFeature (Renderer2D asset) owns silhouette outline rendering; EVVSilhouetteOutline marks which characters get it.
 
 Do not introduce parallel level loaders, wave schedulers, wallets, health models, or pointer utilities without a demonstrated need.
 
