@@ -120,7 +120,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1790866602521149827}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.3748834, w: 0.927072}
+  m_LocalRotation: {x: -0, y: -0, z: 0.07202139, w: 0.99740314}
   m_LocalPosition: {x: 1.27, y: -0.03, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -343,7 +343,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4198028495411873551}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.10426465, w: 0.99454963}
+  m_LocalRotation: {x: -0, y: -0, z: -0.19809416, w: 0.98018306}
   m_LocalPosition: {x: 1.15, y: -0.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -374,7 +374,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5262749050116327413}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.49339584, w: 0.869805}
+  m_LocalRotation: {x: -0, y: -0, z: 0.656383, w: 0.7544278}
   m_LocalPosition: {x: 1.08, y: -0.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -501,7 +501,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8241610293502252920}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.42031, w: 0.90738064}
+  m_LocalRotation: {x: -0, y: -0, z: -0.6580493, w: 0.7529749}
   m_LocalPosition: {x: 1.13, y: -0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -525,16 +525,24 @@ PrefabInstance:
       value: Naked_arrogant_viking
       objectReference: {fileID: 0}
     - target: {fileID: -8417093096744033026, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5499916
+      objectReference: {fileID: 0}
+    - target: {fileID: -8417093096744033026, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0037031476
+      objectReference: {fileID: 0}
+    - target: {fileID: -8417093096744033026, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9987125
+      value: 0.99853617
       objectReference: {fileID: 0}
     - target: {fileID: -8417093096744033026, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.05072899
+      value: 0.05408907
       objectReference: {fileID: 0}
     - target: {fileID: -8417093096744033026, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -43.11
+      value: 3.21
       objectReference: {fileID: 0}
     - target: {fileID: -8327746397907352239, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalRotation.w
@@ -562,7 +570,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7583727911774015163, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5918175
+      value: 0.5891015
       objectReference: {fileID: 0}
     - target: {fileID: -7583727911774015163, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalRotation.y
@@ -570,7 +578,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7583727911774015163, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.806072
+      value: -0.80805904
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_LocalScale.x
@@ -683,6 +691,10 @@ PrefabInstance:
     - target: {fileID: -1439693069628582687, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_Name
       value: HEAD
+      objectReference: {fileID: 0}
+    - target: {fileID: -1059225338034388764, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
+      propertyPath: m_SortingOrder
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 1077095913456919539, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       propertyPath: m_Name
