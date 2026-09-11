@@ -205,14 +205,34 @@ public class EVVPauseMenuController : MonoBehaviour
         // leave the Main Menu frozen.
         Time.timeScale = 1f;
 
-        DestroyPersistentGameplayObjects();
+        // Hide the persistent HUD immediately so it never flashes over the menu, but do NOT
+        // destroy it here. Destroying a DontDestroyOnLoad root in the same end-of-frame as a
+        // single-mode scene switch deadlocks the editor (main thread blocks at 0% CPU, never
+        // reaches MainMenu.Awake). Destroy it once MainMenu has finished loading instead.
+        SetPersistentGameplayObjectsActive(false);
+        SceneManager.sceneLoaded += DestroyPersistentGameplayObjectsAfterLoad;
         SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    static void DestroyPersistentGameplayObjectsAfterLoad(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= DestroyPersistentGameplayObjectsAfterLoad;
+        DestroyPersistentGameplayObjects();
     }
 
     // EVVManager/EVVUiWidgetRefs mark their shared "Manager" object DontDestroyOnLoad, which drags
     // the in-game HUD (defender bar, wallet, card selection) into the Main Menu on top of its
     // canvas. Tear it down on the way out; Level 1's own copy re-initializes on the next load.
-    void DestroyPersistentGameplayObjects()
+    static void SetPersistentGameplayObjectsActive(bool active)
+    {
+        GameObject manager = EVVManager.Instance != null ? EVVManager.Instance.gameObject : null;
+        GameObject widgets = EVVUiWidgetRefs.Instance != null ? EVVUiWidgetRefs.Instance.gameObject : null;
+
+        if (manager != null) manager.SetActive(active);
+        if (widgets != null && widgets != manager) widgets.SetActive(active);
+    }
+
+    static void DestroyPersistentGameplayObjects()
     {
         GameObject manager = EVVManager.Instance != null ? EVVManager.Instance.gameObject : null;
         GameObject widgets = EVVUiWidgetRefs.Instance != null ? EVVUiWidgetRefs.Instance.gameObject : null;
@@ -231,9 +251,6 @@ public class EVVPauseMenuController : MonoBehaviour
             return;
         }
 
-        // Deactivate as well as destroy: Destroy is deferred to the end of the frame, and the
-        // scene load happens in that same window.
-        target.SetActive(false);
         Destroy(target);
     }
 }

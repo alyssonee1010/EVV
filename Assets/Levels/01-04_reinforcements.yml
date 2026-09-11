@@ -44,13 +44,13 @@ waves:
         count: 4
         duration: 5
 
-  - time_offset: 12
+  - time_offset: 20
     spawns:
       - unit: viking
         count: 8
         duration: 5
 
-  - time_offset: 16
+  - time_offset: 20
     tier: flag
     spawns:
       - unit: viking
@@ -61,7 +61,7 @@ waves:
         time_offset: 5
         duration: 0
 
-  - time_offset: 10
+  - time_offset: 20
     spawns:
       - unit: viking
         count: 10
