@@ -20,6 +20,8 @@ public class EVVAnimationSoundPlayer : MonoBehaviour
     static float lastCollectTime = -Mathf.Infinity;
     static float currentCollectPitch = -1f;
 
+    EVVHealth health;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetCollectPitchState()
     {
@@ -30,6 +32,7 @@ public class EVVAnimationSoundPlayer : MonoBehaviour
     void Awake()
     {
         EnsureAudioSource();
+        health = GetComponent<EVVHealth>();
     }
 
     public void PlayAttackSounds()
@@ -83,9 +86,7 @@ public class EVVAnimationSoundPlayer : MonoBehaviour
             : Mathf.Min(currentCollectPitch + collectPitchStep, collectPitchMax);
         lastCollectTime = Time.unscaledTime;
 
-        audioSource.pitch = currentCollectPitch;
-        audioSource.volume = EVVAudioSettings.SfxVolume;
-        audioSource.PlayOneShot(clip);
+        Play(clip, currentCollectPitch);
     }
 
     bool PlayRandom(AudioClip[] clips)
@@ -107,10 +108,33 @@ public class EVVAnimationSoundPlayer : MonoBehaviour
             return false;
         }
 
-        audioSource.pitch = Random.Range(pitchRange.x, pitchRange.y);
-        audioSource.volume = EVVAudioSettings.SfxVolume;
-        audioSource.PlayOneShot(clip);
+        Play(clip, Random.Range(pitchRange.x, pitchRange.y));
         return true;
+    }
+
+    void Play(AudioClip clip, float pitch)
+    {
+        // A dead owner is destroyed at the end of this frame together with its AudioSource, which would
+        // cut the sound short, so death-time sounds go on a temporary source that outlives the owner.
+        AudioSource source = health != null && !health.IsAlive ? CreateDetachedSource(clip, pitch) : audioSource;
+        source.pitch = pitch;
+        source.PlayOneShot(clip, EVVAudioSettings.SfxVolume);
+    }
+
+    AudioSource CreateDetachedSource(AudioClip clip, float pitch)
+    {
+        GameObject carrier = new GameObject(name + " Sound");
+        carrier.transform.position = transform.position;
+
+        AudioSource source = carrier.AddComponent<AudioSource>();
+        source.playOnAwake = false;
+        source.volume = audioSource.volume;
+        source.priority = audioSource.priority;
+        source.spatialBlend = audioSource.spatialBlend;
+        source.outputAudioMixerGroup = audioSource.outputAudioMixerGroup;
+
+        Destroy(carrier, clip.length / Mathf.Max(0.01f, Mathf.Abs(pitch)));
+        return source;
     }
 
     void EnsureAudioSource()

@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(EVVMusicSource))]
 public class EVVLevelMusicController : MonoBehaviour
 {
     [SerializeField] AudioClip earlyLevelsMusic;
@@ -14,10 +15,8 @@ public class EVVLevelMusicController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.loop = true;
-        audioSource.volume = EVVAudioSettings.MusicVolume;
 
         EVVAudioSettings.ApplySavedVolume();
-        EVVAudioSettings.MusicVolumeChanged += ApplyMusicVolume;
         TrySubscribe();
     }
 
@@ -33,16 +32,10 @@ public class EVVLevelMusicController : MonoBehaviour
 
     void OnDisable()
     {
-        EVVAudioSettings.MusicVolumeChanged -= ApplyMusicVolume;
         if (waveDirector != null)
         {
             waveDirector.LevelStarted -= PlayMusicFor;
         }
-    }
-
-    void ApplyMusicVolume()
-    {
-        audioSource.volume = EVVAudioSettings.MusicVolume;
     }
 
     void TrySubscribe()

@@ -16,6 +16,8 @@ public class EVVHealth : MonoBehaviour
 
     public event Action<EVVHealth> Died;
     public event Action<EVVHealth, int> HealthChanged;
+    // Fired only by TakeDamage. HealthChanged also fires on SetMaxHealth refills and heals.
+    public event Action<EVVHealth, int> Damaged;
 
     [SerializeField] UnityEvent onTakeDamage;
 
@@ -50,6 +52,7 @@ public class EVVHealth : MonoBehaviour
         LastDamageRecoilMultiplier = Mathf.Max(0f, recoilMultiplier);
         CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
         HealthChanged?.Invoke(this, CurrentHealth);
+        Damaged?.Invoke(this, CurrentHealth);
 
         if (CurrentHealth == 0)
         {

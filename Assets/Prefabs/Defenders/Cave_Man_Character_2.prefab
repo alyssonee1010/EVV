@@ -715,7 +715,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EVVAnimationSoundPlayer
   audioSource: {fileID: 0}
   attackSounds:
-  - {fileID: 8300000, guid: 0642b72afd5a93d41bac96b338092d52, type: 3}
+  - {fileID: 8300000, guid: 6fa32edae69805e48b00b5d340fa4a0f, type: 3}
   - {fileID: 8300000, guid: 0642b72afd5a93d41bac96b338092d52, type: 3}
   - {fileID: 8300000, guid: 59c80497dd920b442bf9670f85a4b520, type: 3}
   effortSounds:

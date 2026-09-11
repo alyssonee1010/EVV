@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5832793418045442032}
   - component: {fileID: 76484953631683592}
   - component: {fileID: 8672425478371649211}
+  - component: {fileID: 8672425478371649212}
   m_Layer: 0
   m_Name: Game Music
   m_TagString: Untagged
@@ -144,3 +145,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EVVLevelMusicController
   earlyLevelsMusic: {fileID: 8300000, guid: 819fa9c08099498bb681d1a016380fb6, type: 3}
   laterLevelsMusic: {fileID: 8300000, guid: f98db6e2c4384fd184d948a5fca20a31, type: 3}
+--- !u!114 &8672425478371649212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250528589081709530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc36b464bd3c42c4912807202a764dbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
