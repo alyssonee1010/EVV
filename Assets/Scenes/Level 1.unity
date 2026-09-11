@@ -12532,6 +12532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1942365789}
   - component: {fileID: 1942365790}
+  - component: {fileID: 1942365791}
   m_Layer: 0
   m_Name: Wallet
   m_TagString: Untagged
@@ -14980,3 +14981,24 @@ SceneRoots:
   - {fileID: 7359418243305269427}
   - {fileID: 5462458228371618610}
   - {fileID: 566298145}
+--- !u!114 &1942365791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942365788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4e2c71a8f6b34e8a1c05f7d3b62e4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVUsableLoadoutVisibility
+  groups:
+  - producerDefenderId: potion_maker
+    uiObjects:
+    - {fileID: 328345235}
+    - {fileID: 2026929221}
+  - producerDefenderId: speed_potion_maker
+    uiObjects:
+    - {fileID: 2083578013}
+    - {fileID: 1454287590}

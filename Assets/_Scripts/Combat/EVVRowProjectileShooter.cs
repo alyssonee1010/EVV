@@ -16,7 +16,7 @@ public class EVVRowProjectileShooter : MonoBehaviour
     [SerializeField] int projectileDamage = 25;
     [Tooltip("How far a hit enemy gets knocked back. 0 means no knockback at all.")]
     [Min(0f)]
-    [SerializeField] float recoilMultiplier = 1f;
+    [SerializeField] float recoilMultiplier = 0f;
     [SerializeField] float projectileSpeed = 6f;
     [SerializeField] float projectileLifetime = 5f;
     [SerializeField] bool destroyProjectileOnHit = true;

@@ -22,7 +22,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     [Header("Attack")]
     [SerializeField] int attackDamage = 25;
     [SerializeField, Min(0f)] float firstAttackDamageMultiplier = 1f;
-    [SerializeField] float attackRecoilMultiplier = 1f;
+    [SerializeField] float attackRecoilMultiplier = 0f;
     [SerializeField] bool useAttackAnimationEvents = true;
     [SerializeField, Min(0f)] float fallbackFirstAttackDelay = 0.5f;
     [SerializeField, Min(0.01f)] float fallbackAttackInterval = 1.5f;

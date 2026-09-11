@@ -462,7 +462,7 @@ MonoBehaviour:
   applyInWorldSpace: 1
   returnAfterRecoil: 1
   recoilDirection: {x: 1, y: 0}
-  recoilDistance: 0.12
+  recoilDistance: 0.14
   recoilOutSeconds: 0.05
   recoilReturnSeconds: 0.12
   triggerStunAnimation: 1

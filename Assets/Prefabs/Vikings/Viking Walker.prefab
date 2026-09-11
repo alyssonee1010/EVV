@@ -389,7 +389,7 @@ MonoBehaviour:
   overlapTolerance: 0.1
   attackDamage: 10
   firstAttackDamageMultiplier: 1
-  attackRecoilMultiplier: 1
+  attackRecoilMultiplier: 0
   useAttackAnimationEvents: 1
   fallbackFirstAttackDelay: 0.5
   fallbackAttackInterval: 1.5
