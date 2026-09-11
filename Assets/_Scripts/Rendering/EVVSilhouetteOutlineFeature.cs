@@ -25,6 +25,8 @@ public class EVVSilhouetteOutlineFeature : ScriptableRendererFeature2D
     [SerializeField] Shader outlineShader;
     [SerializeField] Color outlineColor = Color.black;
     [SerializeField, Min(0f)] float outlineWidth = 0.035f;
+    [Tooltip("Caps the outline width in screen pixels on high-resolution screens. The cost of the outline pass grows with the square of the pixel width, so lower this for phones or weak GPUs.")]
+    [SerializeField, Range(1f, EVVSilhouetteOutlinePass.MaxRadiusPixels)] float maxOutlinePixels = 5f;
     [SerializeField, Range(0f, 1f)] float alphaCutoff = 0.5f;
 
     Material keyMaterial;
@@ -54,7 +56,7 @@ public class EVVSilhouetteOutlineFeature : ScriptableRendererFeature2D
 
         pass.renderPassEvent2D = injectionPoint2D;
         pass.renderPassSortingLayerID = sortingLayerID;
-        pass.Setup(outlineColor, outlineWidth, alphaCutoff);
+        pass.Setup(outlineColor, outlineWidth, maxOutlinePixels, alphaCutoff);
         renderer.EnqueuePass(pass);
     }
 
@@ -76,7 +78,7 @@ class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
 {
     // The outline pass reads every texel within the radius, so keep it small. The offset
     // table in the outline shader covers this radius.
-    const float MaxRadiusPixels = 8f;
+    public const float MaxRadiusPixels = 8f;
     // Must match MAX_RECTS in the outline shader.
     const int MaxRectsPerDraw = 64;
 
@@ -117,6 +119,7 @@ class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
     readonly Vector4[] rects = new Vector4[MaxRectsPerDraw];
     Color outlineColor;
     float outlineWidth;
+    float maxRadiusPixels;
     float alphaCutoff;
 
     public EVVSilhouetteOutlinePass(Material keyMaterial, Material outlineMaterial)
@@ -126,10 +129,11 @@ class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
         profilingSampler = new ProfilingSampler("EVV Silhouette Outline");
     }
 
-    public void Setup(Color color, float width, float cutoff)
+    public void Setup(Color color, float width, float maxPixels, float cutoff)
     {
         outlineColor = color;
         outlineWidth = width;
+        maxRadiusPixels = Mathf.Clamp(maxPixels, 1f, MaxRadiusPixels);
         alphaCutoff = cutoff;
     }
 
@@ -199,7 +203,7 @@ class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
         float pixelsPerUnit = camera.orthographic
             ? descriptor.height / (2f * camera.orthographicSize)
             : descriptor.height * 0.1f;
-        float radiusPixels = Mathf.Min(outlineWidth * pixelsPerUnit, MaxRadiusPixels);
+        float radiusPixels = Mathf.Min(outlineWidth * pixelsPerUnit, maxRadiusPixels);
 
         using (IRasterRenderGraphBuilder builder = renderGraph.AddRasterRenderPass("EVV Silhouette Outline", out OutlinePassData data, profilingSampler))
         {

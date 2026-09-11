@@ -75,4 +75,5 @@ MonoBehaviour:
   outlineShader: {fileID: 4800000, guid: a552261ede42a064b8a1d21be9aa9a64, type: 3}
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
   outlineWidth: 0.035
+  maxOutlinePixels: 5
   alphaCutoff: 0.5
