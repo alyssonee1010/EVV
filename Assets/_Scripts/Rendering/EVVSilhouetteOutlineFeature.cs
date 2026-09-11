@@ -6,16 +6,18 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>
-/// Draws an outline around the whole silhouette of every character marked with
-/// EVVSilhouetteOutline, instead of around each sprite of its rig.
+/// Draws an outline around every character marked with EVVSilhouetteOutline: around the
+/// whole body, and around each limb group where it moves in front of another part of the
+/// same character, instead of around each sprite of its rig.
 ///
 /// Injected after the sprites of the configured sorting layer (Gameplay), which is
 /// its own render batch because the 2D renderer's Camera Sorting Layer Texture ends
 /// on that layer. The pass renders that layer once more into a "key" texture that
-/// stores how near each visible sprite is to the camera (its lane depth) and which
-/// pixels belong to outlined characters. The outline is then drawn in screen space
-/// only over pixels the character is in front of, so a defender in a nearer lane
-/// still covers the outline of a Viking walking behind it.
+/// stores, per pixel, how near the visible sprite is to the camera (its lane depth),
+/// its outline id (character + limb group) and its sorting order. The outline is then
+/// drawn on a quad around each character, only over pixels the outlined part is in front
+/// of, so a defender in a nearer lane still covers the outline of a Viking walking
+/// behind it.
 /// </summary>
 public class EVVSilhouetteOutlineFeature : ScriptableRendererFeature2D
 {
@@ -45,7 +47,7 @@ public class EVVSilhouetteOutlineFeature : ScriptableRendererFeature2D
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (pass == null || outlineWidth <= 0f || !SortingLayer.IsValid(sortingLayerID) || EVVSilhouetteOutline.ActiveCount == 0)
+        if (pass == null || outlineWidth <= 0f || !SortingLayer.IsValid(sortingLayerID) || EVVSilhouetteOutline.Active.Count == 0)
         {
             return;
         }
@@ -72,6 +74,12 @@ public class EVVSilhouetteOutlineFeature : ScriptableRendererFeature2D
 
 class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
 {
+    // The outline pass reads every texel within the radius, so keep it small. The offset
+    // table in the outline shader covers this radius.
+    const float MaxRadiusPixels = 8f;
+    // Must match MAX_RECTS in the outline shader.
+    const int MaxRectsPerDraw = 64;
+
     // The passes the 2D renderer draws, so every sprite material qualifies for the key texture.
     static readonly List<ShaderTagId> ShaderTags = new List<ShaderTagId>
     {
@@ -82,23 +90,31 @@ class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
     static readonly int CutoffId = Shader.PropertyToID("_Cutoff");
     static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
     static readonly int OutlineParamsId = Shader.PropertyToID("_OutlineParams");
+    static readonly int OutlineRectsId = Shader.PropertyToID("_OutlineRects");
+    static readonly int OutlineDepthId = Shader.PropertyToID("_OutlineDepth");
+    static readonly int KeyTextureId = Shader.PropertyToID("_SilhouetteKeyTex");
 
     class KeyPassData
     {
-        public RendererListHandle occluders;
-        public RendererListHandle characters;
+        public RendererListHandle sprites;
     }
 
     class OutlinePassData
     {
         public TextureHandle key;
         public Material material;
+        public MaterialPropertyBlock properties;
         public Color color;
         public Vector4 parameters;
+        public Vector4[] rects;
+        public int rectCount;
+        public float depth;
     }
 
     readonly Material keyMaterial;
     readonly Material outlineMaterial;
+    readonly MaterialPropertyBlock outlineProperties = new MaterialPropertyBlock();
+    readonly Vector4[] rects = new Vector4[MaxRectsPerDraw];
     Color outlineColor;
     float outlineWidth;
     float alphaCutoff;
@@ -124,43 +140,58 @@ class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
         UniversalRenderingData renderingData = frameData.Get<UniversalRenderingData>();
         UniversalLightData lightData = frameData.Get<UniversalLightData>();
 
+        // One quad per outlined character: its sprite bounds plus the outline width.
+        float depth = 0f;
+        int rectCount = 0;
+        foreach (EVVSilhouetteOutline character in EVVSilhouetteOutline.Active)
+        {
+            if (rectCount == MaxRectsPerDraw || !character.TryGetBounds(out Bounds bounds))
+            {
+                continue;
+            }
+
+            Vector3 min = bounds.min;
+            Vector3 max = bounds.max;
+            rects[rectCount] = new Vector4(min.x - outlineWidth, min.y - outlineWidth, max.x + outlineWidth, max.y + outlineWidth);
+            depth += bounds.center.z;
+            rectCount++;
+        }
+
+        if (rectCount == 0)
+        {
+            return;
+        }
+
+        depth /= rectCount;
+
         RenderTextureDescriptor descriptor = cameraData.cameraTargetDescriptor;
-        descriptor.graphicsFormat = GraphicsFormat.R16G16_SFloat;
+        descriptor.graphicsFormat = GraphicsFormat.R8G8B8A8_UNorm;
         descriptor.depthBufferBits = 0;
         descriptor.msaaSamples = 1;
-        TextureHandle key = UniversalRenderer.CreateRenderGraphTexture(renderGraph, descriptor, "_EVVSilhouetteOutlineKey", true, FilterMode.Bilinear);
+        TextureHandle key = UniversalRenderer.CreateRenderGraphTexture(renderGraph, descriptor, "_EVVSilhouetteOutlineKey", true);
 
         keyMaterial.SetFloat(CutoffId, alphaCutoff);
 
         // Sorted the way the layer itself is drawn (lane depth), so the nearest sprite wins in the key texture.
-        DrawingSettings occluderDrawing = CreateDrawingSettings(ShaderTags, renderingData, cameraData, lightData, SortingCriteria.CommonTransparent);
-        occluderDrawing.overrideMaterial = keyMaterial;
-        occluderDrawing.overrideMaterialPassIndex = 0;
-        DrawingSettings characterDrawing = occluderDrawing;
-        characterDrawing.overrideMaterialPassIndex = 1;
+        DrawingSettings drawing = CreateDrawingSettings(ShaderTags, renderingData, cameraData, lightData, SortingCriteria.CommonTransparent);
+        drawing.overrideMaterial = keyMaterial;
+        drawing.overrideMaterialPassIndex = 0;
 
         short layerValue = (short)SortingLayer.GetLayerValueFromID(renderPassSortingLayerID);
-        FilteringSettings occluderFilter = new FilteringSettings(RenderQueueRange.all)
+        FilteringSettings filtering = new FilteringSettings(RenderQueueRange.all)
         {
             sortingLayerRange = new SortingLayerRange(layerValue, layerValue),
         };
-        FilteringSettings characterFilter = occluderFilter;
-        characterFilter.renderingLayerMask = EVVSilhouetteOutline.RenderingLayerMask;
-
-        RendererListHandle occluders = renderGraph.CreateRendererList(new RendererListParams(renderingData.cullResults, occluderDrawing, occluderFilter));
-        RendererListHandle characters = renderGraph.CreateRendererList(new RendererListParams(renderingData.cullResults, characterDrawing, characterFilter));
+        RendererListHandle sprites = renderGraph.CreateRendererList(new RendererListParams(renderingData.cullResults, drawing, filtering));
 
         using (IRasterRenderGraphBuilder builder = renderGraph.AddRasterRenderPass("EVV Silhouette Outline Key", out KeyPassData data, profilingSampler))
         {
-            data.occluders = occluders;
-            data.characters = characters;
-            builder.UseRendererList(occluders);
-            builder.UseRendererList(characters);
+            data.sprites = sprites;
+            builder.UseRendererList(sprites);
             builder.SetRenderAttachment(key, 0);
             builder.SetRenderFunc(static (KeyPassData passData, RasterGraphContext context) =>
             {
-                context.cmd.DrawRendererList(passData.occluders);
-                context.cmd.DrawRendererList(passData.characters);
+                context.cmd.DrawRendererList(passData.sprites);
             });
         }
 
@@ -168,20 +199,30 @@ class EVVSilhouetteOutlinePass : ScriptableRenderPass2D
         float pixelsPerUnit = camera.orthographic
             ? descriptor.height / (2f * camera.orthographicSize)
             : descriptor.height * 0.1f;
+        float radiusPixels = Mathf.Min(outlineWidth * pixelsPerUnit, MaxRadiusPixels);
 
         using (IRasterRenderGraphBuilder builder = renderGraph.AddRasterRenderPass("EVV Silhouette Outline", out OutlinePassData data, profilingSampler))
         {
             data.key = key;
             data.material = outlineMaterial;
+            data.properties = outlineProperties;
             data.color = outlineColor;
-            data.parameters = new Vector4(1f / descriptor.width, 1f / descriptor.height, outlineWidth * pixelsPerUnit, 0f);
+            data.parameters = new Vector4(1f / descriptor.width, 1f / descriptor.height, radiusPixels, 0f);
+            data.rects = rects;
+            data.rectCount = rectCount;
+            data.depth = depth;
             builder.UseTexture(key);
             builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
             builder.SetRenderFunc(static (OutlinePassData passData, RasterGraphContext context) =>
             {
-                passData.material.SetColor(OutlineColorId, passData.color);
-                passData.material.SetVector(OutlineParamsId, passData.parameters);
-                Blitter.BlitTexture(context.cmd, passData.key, new Vector4(1f, 1f, 0f, 0f), passData.material, 0);
+                RTHandle keyTexture = passData.key;
+                MaterialPropertyBlock properties = passData.properties;
+                properties.SetTexture(KeyTextureId, keyTexture);
+                properties.SetColor(OutlineColorId, passData.color);
+                properties.SetVector(OutlineParamsId, passData.parameters);
+                properties.SetVectorArray(OutlineRectsId, passData.rects);
+                properties.SetFloat(OutlineDepthId, passData.depth);
+                context.cmd.DrawProcedural(Matrix4x4.identity, passData.material, 0, MeshTopology.Quads, 4, passData.rectCount, properties);
             });
         }
     }

@@ -94,9 +94,9 @@ EVVUsableCounterUI, EVVLevelProgressUI, and the loadout/select components presen
 
 ## Rendering Layer
 
-EVVSilhouetteOutlineFeature is a 2D renderer feature on Assets/Settings/Renderer2D.asset. It draws one outline around the whole silhouette of every character marked with EVVSilhouetteOutline, for art that has no drawn outline (currently the arrogant Viking). Outline color and width live on the feature.
+EVVSilhouetteOutlineFeature is a 2D renderer feature on Assets/Settings/Renderer2D.asset. It draws an outline around every character marked with EVVSilhouetteOutline, for art that has no drawn outline (currently the arrogant Viking): around the whole body, and around each limb group (an arm with its joint pieces, a leg, the head) where it moves in front of another part of the same character, so an arm swinging across the torso keeps its outline while joint pieces stay seamless. Outline color and width live on the feature; the limb groups live on the marker.
 
-The feature runs right after the Gameplay sorting layer; the renderer's Camera Sorting Layer Texture is bound to Gameplay only to make that layer its own render batch. It re-renders the Gameplay sprites into a key texture holding each sprite's lane depth and the outlined pixels, then draws the outline only where the character is nearer than the visible sprite, so lane sorting stays correct. EVVSilhouetteOutline tags the character's SpriteRenderers with the Outline rendering layer while it is enabled.
+The feature runs right after the Gameplay sorting layer; the renderer's Camera Sorting Layer Texture is bound to Gameplay only to make that layer its own render batch. It re-renders the Gameplay sprites into a key texture holding each sprite's lane depth, outline id (character + limb group) and sorting order, then draws the outline on a quad around each marked character, only where the outlined part is in front of the visible sprite, so lane sorting stays correct. EVVSilhouetteOutline pushes the outline id and the current sorting order of each of its SpriteRenderers through a MaterialPropertyBlock while it is enabled.
 
 ## Legacy Content
 
