@@ -49,6 +49,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     Animator animator;
     Vector3 targetPosition;
     EVVHealth attackTarget;
+    EVVDefender attackTargetDefender;
     bool hasTarget;
     bool hasAttackTarget;
     int lastHealth;
@@ -59,6 +60,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     EVVCharmLure carriedLure;
     EVVCharmLure resistedLure;
     bool hasCharmTarget;
+    bool isClaimant;
     bool waitingForGrabEvent;
     bool hasGrabTrigger;
     float grabTimer;
@@ -134,7 +136,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
         if (hasAttackTarget)
         {
-            if (attackTarget == null || !attackTarget.IsAlive)
+            if (!IsAttackTargetValid())
             {
                 ResumeWalking();
                 return;
@@ -222,7 +224,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
             return;
         }
 
-        if (attackTarget == null || !attackTarget.IsAlive)
+        if (!IsAttackTargetValid())
         {
             return;
         }
@@ -232,10 +234,22 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         ResumeWalking();
     }
 
+    bool IsAttackTargetValid()
+    {
+        return attackTarget != null
+            && attackTarget.IsAlive
+            && (attackTargetDefender == null || attackTargetDefender.isActiveAndEnabled);
+    }
+
     // The carrier's death is the lure's cue to run: it happens before the Viking is destroyed,
     // so the lure can leave his hierarchy in time.
     void OnDied(EVVHealth deadHealth)
     {
+        if (hasCharmTarget && charmTarget != null)
+        {
+            charmTarget.Release(gameObject);
+        }
+
         if (carriedLure != null)
         {
             carriedLure.Escape(targetPosition);
@@ -276,12 +290,13 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
                 continue;
             }
 
-            if (!IsInReach(character.Health))
+            if (!IsInReach(character.Health, allowOverlap: false))
             {
                 continue;
             }
 
             attackTarget = character.Health;
+            attackTargetDefender = character;
             return true;
         }
 
@@ -303,27 +318,32 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
                 continue;
             }
 
-            if (!IsInReach(walker.Health))
+            if (!IsInReach(walker.Health, allowOverlap: true))
             {
                 continue;
             }
 
             attackTarget = walker.Health;
+            attackTargetDefender = null;
             return true;
         }
 
         return false;
     }
 
-    bool IsInReach(EVVHealth target)
+    // Vikings fighting over the lure often stand on top of each other (the loser of the claim
+    // waits right where the carrier turns around), so a rival counts as in front until he is
+    // fully behind this Viking; defenders only within the usual overlap tolerance.
+    bool IsInReach(EVVHealth target, bool allowOverlap)
     {
         if (!IsSameDepth(target))
         {
             return false;
         }
 
-        float forwardDistance = GetForwardDistanceTo(target);
-        return forwardDistance >= -overlapTolerance && forwardDistance <= attackStartDistance;
+        float forwardDistance = GetForwardDistanceTo(target, out float bodiesWidth);
+        float minDistance = allowOverlap ? -bodiesWidth : -overlapTolerance;
+        return forwardDistance >= minDistance && forwardDistance <= attackStartDistance;
     }
 
     public void DealAttackDamage()
@@ -333,13 +353,14 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
     void DealAttackDamage(float damageMultiplier)
     {
-        if (attackTarget == null || !attackTarget.IsAlive)
+        if (!IsAttackTargetValid())
         {
             ResumeWalking();
             return;
         }
 
-        if (!IsSameDepth(attackTarget))
+        // A defender stays put, a rival may have walked off: only swing at one still in reach.
+        if (!IsSameDepth(attackTarget) || (attackTargetDefender == null && !IsInReach(attackTarget, allowOverlap: true)))
         {
             ResumeWalking();
             return;
@@ -384,7 +405,8 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
     // A lure in front of the Viking gets one charm roll per encounter. Charmed: he reaches for it
     // (Grab animation, or a plain delay without one) instead of attacking. Resisted: he attacks it
-    // like any defender and never rolls for that lure again.
+    // like any defender and never rolls for that lure again. Only the first charmed Viking holds
+    // the claim; a later one reaches too but waits, and gets the claim if the first one falls.
     bool TryStartCharm(EVVHealth target)
     {
         EVVCharmLure lure = target != null ? target.GetComponent<EVVCharmLure>() : null;
@@ -400,8 +422,16 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         }
 
         attackTarget = null;
+        attackTargetDefender = null;
         charmTarget = lure;
         hasCharmTarget = true;
+        isClaimant = lure.TryClaim(gameObject);
+        StartGrab();
+        return true;
+    }
+
+    void StartGrab()
+    {
         grabTimer = fallbackGrabDelay;
         waitingForGrabEvent = hasGrabTrigger;
         if (hasGrabTrigger)
@@ -409,15 +439,26 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
             animator.ResetTrigger(AttackTriggerName);
             animator.SetTrigger(GrabTriggerName);
         }
-
-        return true;
     }
 
     void TickGrab()
     {
-        if (charmTarget == null || !charmTarget.isActiveAndEnabled)
+        // Gone, or carried off by the Viking who held the claim: nothing left to wait for. The
+        // carrier is now a rival in front of this one.
+        if (charmTarget == null || !charmTarget.isActiveAndEnabled || charmTarget.IsCarried)
         {
             ResumeWalking();
+            return;
+        }
+
+        if (!isClaimant)
+        {
+            if (charmTarget.TryClaim(gameObject))
+            {
+                isClaimant = true;
+                StartGrab();
+            }
+
             return;
         }
 
@@ -435,7 +476,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
     public void GrabTargetAnimationEvent()
     {
-        if (hasCharmTarget)
+        if (hasCharmTarget && isClaimant)
         {
             CompleteGrab();
         }
@@ -446,14 +487,13 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     // he fights them on the way out.
     void CompleteGrab()
     {
-        if (charmTarget == null)
+        if (charmTarget == null || !charmTarget.Grab(gameObject, GetCarryPoint()))
         {
             ResumeWalking();
             return;
         }
 
         carriedLure = charmTarget;
-        carriedLure.Grab(GetCarryPoint());
         ClearCharmTarget();
         TurnAround();
         isCarrying = true;
@@ -464,6 +504,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     {
         charmTarget = null;
         hasCharmTarget = false;
+        isClaimant = false;
         waitingForGrabEvent = false;
         grabTimer = 0f;
         if (hasGrabTrigger)
@@ -584,10 +625,11 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         return false;
     }
 
-    float GetForwardDistanceTo(EVVHealth target)
+    float GetForwardDistanceTo(EVVHealth target, out float bodiesWidth)
     {
         Bounds selfBounds = GetBounds(GetComponent<Collider2D>(), transform.position);
         Bounds targetBounds = GetBounds(target.GetComponent<Collider2D>(), target.transform.position);
+        bodiesWidth = selfBounds.size.x + targetBounds.size.x;
 
         float selfFrontX = walkDirection < 0f ? selfBounds.min.x : selfBounds.max.x;
         float targetFrontX = walkDirection < 0f ? targetBounds.max.x : targetBounds.min.x;

@@ -49,6 +49,7 @@ public class EVVCharmLure : MonoBehaviour
     Camera escapeCamera;
     float escapeDirection;
     bool isEscaping;
+    GameObject claimant;
 
     public bool IsCarried { get; private set; }
 
@@ -99,14 +100,41 @@ public class EVVCharmLure : MonoBehaviour
         return true;
     }
 
-    // Moves the lure from the board onto the Viking's carry point. From here on it is no longer a
-    // defender: it leaves EVVTargetRegistry, stops attacking, cannot be healed or removed, and its
-    // cell frees up on the placement manager's next occupied-cell check.
-    public void Grab(Transform carryPoint)
+    // Only one charmed Viking gets to pick the lure up: the first to claim it. The claim is his
+    // until he grabs, releases it, or is destroyed; the others wait for their turn.
+    public bool TryClaim(GameObject viking)
     {
-        if (IsCarried || carryPoint == null)
+        if (viking == null || IsCarried)
         {
-            return;
+            return false;
+        }
+
+        if (claimant == null || claimant == viking)
+        {
+            claimant = viking;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void Release(GameObject viking)
+    {
+        if (claimant == viking)
+        {
+            claimant = null;
+        }
+    }
+
+    // Moves the lure from the board onto the claimant's carry point. From here on it is no longer
+    // a defender: it leaves EVVTargetRegistry, stops attacking, cannot be healed or removed, and
+    // its cell frees up on the placement manager's next occupied-cell check. Returns false for a
+    // Viking who does not hold the claim.
+    public bool Grab(GameObject viking, Transform carryPoint)
+    {
+        if (IsCarried || carryPoint == null || !TryClaim(viking))
+        {
+            return false;
         }
 
         IsCarried = true;
@@ -168,6 +196,7 @@ public class EVVCharmLure : MonoBehaviour
         }
 
         SetTrigger(CarriedTriggerName);
+        return true;
     }
 
     // The carrier died: drop to the ground where he fell and run along the row towards the
