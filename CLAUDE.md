@@ -4,7 +4,7 @@ Read AGENTS.md before changing this project. The project preference is small, si
 
 ## Project
 
-Vikings vs Everyone is a Unity 2D lane-defense game.
+Everyone vs Vikings is a Unity 2D lane-defense game.
 
 - Unity: 6000.5.0f1
 - Entry scene: Assets/Scenes/MainMenu.unity
@@ -25,15 +25,17 @@ Unity Play Mode remains required for scene, animation, asset-import, and runtime
 
 ## Important Ownership Rules
 
-- VVELevelLoader parses and discovers level YAML.
-- VVEMainMenuController owns scene-authored menu behavior, not gameplay state.
-- VVELevelSelectUI owns the pre-level and between-level gameplay-scene flow.
-- VVEWaveDirector owns YAML wave scheduling and enemy tracking.
-- VVEDefenderCatalog owns defender id, prefab, cost, and display-name mappings.
-- VVEDefenderUnlocks owns unlock persistence and loadout state.
+- EVVLevelLoader parses and discovers level YAML.
+- EVVMainMenuController owns scene-authored menu behavior, not gameplay state.
+- EVVLevelSelectUI owns the pre-level and between-level gameplay-scene flow.
+- EVVWaveDirector owns YAML wave scheduling and enemy tracking.
+- EVVDefenderCatalog owns defender id, prefab, cost, and display-name mappings.
+- EVVDefenderUnlocks owns unlock persistence and loadout state.
 - PlantPlacementManager owns board placement/removal routing.
-- VVEWorldPointer owns generic mouse-to-world conversion and world hit-testing.
+- EVVWorldPointer owns generic mouse-to-world conversion and world hit-testing.
 - Feature controllers own their target-validity and effect rules.
+- EVVCharmLure owns the charm rule, the carried presentation and the escape run; EVVCharmResistance is a Viking's answer to it; EVVEnemyVikingWalker owns the grab, the walk back and the fights on the way; EVVTargetRegistry decides who counts as an enemy.
+- EVVSilhouetteOutlineFeature (Renderer2D asset) owns silhouette outline rendering; EVVSilhouetteOutline marks which characters get it.
 
 Do not introduce parallel level loaders, wave schedulers, wallets, health models, or pointer utilities without a demonstrated need.
 

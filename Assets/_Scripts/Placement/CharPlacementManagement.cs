@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class PlantPlacementManager : MonoBehaviour
 {
-    [SerializeField] private VVEBoardGrid boardGrid;
-    [SerializeField] private VVEUsableWallet usableWallet;
-    [SerializeField] private VVEHealingPotionUseController healingPotionUseController;
+    [SerializeField] private EVVBoardGrid boardGrid;
+    [SerializeField] private EVVUsableWallet usableWallet;
+    [SerializeField] private EVVHealingPotionUseController healingPotionUseController;
     [SerializeField] private Vector2 placementOffset = new Vector2(-0.2f, 0.2f);
     [SerializeField, Range(0.1f, 1f)] private float previewAlpha = 0.45f;
     [SerializeField] private Color validPreviewTint = Color.white;
@@ -15,13 +15,13 @@ public class PlantPlacementManager : MonoBehaviour
     [SerializeField] private bool enableRemoveTool = true;
     [SerializeField] private KeyCode toggleRemoveToolKey = KeyCode.X;
     [SerializeField] private KeyCode holdRemoveToolKey = KeyCode.LeftShift;
-    [SerializeField] private VVERemoveToolCursor removeTool;
-    [SerializeField] private VVECharacterTargetHighlight removeTargetHighlight;
+    [SerializeField] private EVVRemoveToolCursor removeTool;
+    [SerializeField] private EVVCharacterTargetHighlight removeTargetHighlight;
     [SerializeField, Range(0f, 1f)] private float removeTargetAlpha = 0.45f;
 
-    private Dictionary<Vector2Int, VVEDefender> occupiedCells = new Dictionary<Vector2Int, VVEDefender>();
+    private Dictionary<Vector2Int, EVVDefender> occupiedCells = new Dictionary<Vector2Int, EVVDefender>();
     private GameObject selectedPlantPrefab;
-    private VVEDefenderCard selectedCard;
+    private EVVDefenderCard selectedCard;
     private GameObject placementPreview;
     private SpriteRenderer[] previewRenderers;
     private bool removeToolSelected;
@@ -32,9 +32,9 @@ public class PlantPlacementManager : MonoBehaviour
 
     public void ResetBoard()
     {
-        VVECharacterPotionTargeting.Cancel();
+        EVVCharacterPotionTargeting.Cancel();
 
-        foreach (KeyValuePair<Vector2Int, VVEDefender> occupiedCell in occupiedCells)
+        foreach (KeyValuePair<Vector2Int, EVVDefender> occupiedCell in occupiedCells)
         {
             if (occupiedCell.Value != null)
             {
@@ -51,8 +51,8 @@ public class PlantPlacementManager : MonoBehaviour
     // the next one lying on the board.
     void ClearRemainingPickups()
     {
-        VVEBoardPickup[] pickups = FindObjectsByType<VVEBoardPickup>(FindObjectsSortMode.None);
-        foreach (VVEBoardPickup pickup in pickups)
+        EVVBoardPickup[] pickups = FindObjectsByType<EVVBoardPickup>(FindObjectsSortMode.None);
+        foreach (EVVBoardPickup pickup in pickups)
         {
             if (pickup != null)
             {
@@ -65,19 +65,19 @@ public class PlantPlacementManager : MonoBehaviour
     {
         if (usableWallet == null)
         {
-            usableWallet = VVEUsableWallet.Instance != null ? VVEUsableWallet.Instance : FindAnyObjectByType<VVEUsableWallet>();
+            usableWallet = EVVUsableWallet.Instance != null ? EVVUsableWallet.Instance : FindAnyObjectByType<EVVUsableWallet>();
         }
 
         if (boardGrid == null)
         {
-            boardGrid = FindAnyObjectByType<VVEBoardGrid>();
+            boardGrid = FindAnyObjectByType<EVVBoardGrid>();
         }
 
         if (healingPotionUseController == null)
         {
-            healingPotionUseController = VVEHealingPotionUseController.Instance != null
-                ? VVEHealingPotionUseController.Instance
-                : FindAnyObjectByType<VVEHealingPotionUseController>();
+            healingPotionUseController = EVVHealingPotionUseController.Instance != null
+                ? EVVHealingPotionUseController.Instance
+                : FindAnyObjectByType<EVVHealingPotionUseController>();
         }
 
         if (removeTool != null)
@@ -87,7 +87,7 @@ public class PlantPlacementManager : MonoBehaviour
 
         if (removeTargetHighlight == null)
         {
-            removeTargetHighlight = gameObject.AddComponent<VVECharacterTargetHighlight>();
+            removeTargetHighlight = gameObject.AddComponent<EVVCharacterTargetHighlight>();
         }
 
         removeTargetHighlight.ConfigureTransparency(removeTargetAlpha);
@@ -126,7 +126,7 @@ public class PlantPlacementManager : MonoBehaviour
 
     private void HandlePrimaryClick()
     {
-        if (VVECharacterPotionTargeting.TryHandlePrimaryClick(GetMouseWorldPosition()))
+        if (EVVCharacterPotionTargeting.TryHandlePrimaryClick(GetMouseWorldPosition()))
         {
             ClearSelection();
             return;
@@ -176,9 +176,9 @@ public class PlantPlacementManager : MonoBehaviour
     {
         if (healingPotionUseController == null)
         {
-            healingPotionUseController = VVEHealingPotionUseController.Instance != null
-                ? VVEHealingPotionUseController.Instance
-                : FindAnyObjectByType<VVEHealingPotionUseController>();
+            healingPotionUseController = EVVHealingPotionUseController.Instance != null
+                ? EVVHealingPotionUseController.Instance
+                : FindAnyObjectByType<EVVHealingPotionUseController>();
         }
 
         return healingPotionUseController != null && healingPotionUseController.IsAiming;
@@ -212,7 +212,7 @@ public class PlantPlacementManager : MonoBehaviour
     private bool TryRemovePlacedCharacter()
     {
         CleanupOccupiedCells();
-        if (!TryGetPlacedCharacterAt(GetMouseWorldPosition(), out Vector2Int cellPosition, out VVEDefender character))
+        if (!TryGetPlacedCharacterAt(GetMouseWorldPosition(), out Vector2Int cellPosition, out EVVDefender character))
         {
             Debug.Log("No placed character to remove here.");
             return false;
@@ -232,7 +232,7 @@ public class PlantPlacementManager : MonoBehaviour
         return true;
     }
 
-    private bool TryGetPlacedCharacterAt(Vector3 worldPosition, out Vector2Int cellPosition, out VVEDefender character)
+    private bool TryGetPlacedCharacterAt(Vector3 worldPosition, out Vector2Int cellPosition, out EVVDefender character)
     {
         cellPosition = default;
         character = null;
@@ -248,7 +248,7 @@ public class PlantPlacementManager : MonoBehaviour
             return true;
         }
 
-        character = VVEWorldPointer.FindClosest<VVEDefender>(
+        character = EVVWorldPointer.FindClosest<EVVDefender>(
             worldPosition,
             0f,
             candidate => candidate != null && occupiedCells.ContainsValue(candidate));
@@ -258,14 +258,14 @@ public class PlantPlacementManager : MonoBehaviour
         }
 
         if (character.HasCell
-            && occupiedCells.TryGetValue(character.Cell, out VVEDefender occupiedCharacter)
+            && occupiedCells.TryGetValue(character.Cell, out EVVDefender occupiedCharacter)
             && occupiedCharacter == character)
         {
             cellPosition = character.Cell;
             return true;
         }
 
-        foreach (KeyValuePair<Vector2Int, VVEDefender> occupiedCell in occupiedCells)
+        foreach (KeyValuePair<Vector2Int, EVVDefender> occupiedCell in occupiedCells)
         {
             if (occupiedCell.Value == character)
             {
@@ -279,7 +279,7 @@ public class PlantPlacementManager : MonoBehaviour
 
     private bool TryCollectBoardPickup()
     {
-        VVEBoardPickup pickup = VVEWorldPointer.FindClosest<VVEBoardPickup>(GetMouseWorldPosition(), 0f);
+        EVVBoardPickup pickup = EVVWorldPointer.FindClosest<EVVBoardPickup>(GetMouseWorldPosition(), 0f);
         return pickup != null && pickup.Collect();
     }
 
@@ -287,9 +287,9 @@ public class PlantPlacementManager : MonoBehaviour
     {
         if (healingPotionUseController == null)
         {
-            healingPotionUseController = VVEHealingPotionUseController.Instance != null
-                ? VVEHealingPotionUseController.Instance
-                : FindAnyObjectByType<VVEHealingPotionUseController>();
+            healingPotionUseController = EVVHealingPotionUseController.Instance != null
+                ? EVVHealingPotionUseController.Instance
+                : FindAnyObjectByType<EVVHealingPotionUseController>();
         }
 
         return healingPotionUseController != null && healingPotionUseController.TryHandlePrimaryClick(GetMouseWorldPosition());
@@ -301,10 +301,10 @@ public class PlantPlacementManager : MonoBehaviour
         Collider2D[] hits = Physics2D.OverlapPointAll(mouseWorldPosition);
         foreach (Collider2D hit in hits)
         {
-            VVEDefenderCard slot = hit.GetComponentInParent<VVEDefenderCard>();
+            EVVDefenderCard slot = hit.GetComponentInParent<EVVDefenderCard>();
             if (slot == null)
             {
-                slot = hit.GetComponentInChildren<VVEDefenderCard>();
+                slot = hit.GetComponentInChildren<EVVDefenderCard>();
             }
 
             if (slot == null)
@@ -369,7 +369,7 @@ public class PlantPlacementManager : MonoBehaviour
 
         Vector3 spawnPosition = boardGrid.GetCellCenterWorld(row, column);
         spawnPosition += (Vector3)placementOffset;
-        spawnPosition = VVELaneDepth.WithLaneZ(spawnPosition, row);
+        spawnPosition = EVVLaneDepth.WithLaneZ(spawnPosition, row);
         if (usableWallet != null && !usableWallet.TrySpendDiamonds(selectedCost))
         {
             Debug.Log("Not enough diamonds to place " + selectedPlantPrefab.name + ". Cost: " + selectedCost);
@@ -377,10 +377,10 @@ public class PlantPlacementManager : MonoBehaviour
         }
 
         GameObject spawnedPlant = Instantiate(selectedPlantPrefab, spawnPosition, Quaternion.identity);
-        VVEDefender boardCharacter = spawnedPlant.GetComponent<VVEDefender>();
+        EVVDefender boardCharacter = spawnedPlant.GetComponent<EVVDefender>();
         if (boardCharacter == null)
         {
-            boardCharacter = spawnedPlant.AddComponent<VVEDefender>();
+            boardCharacter = spawnedPlant.AddComponent<EVVDefender>();
         }
 
         boardCharacter.SetCell(cellPosition);
@@ -390,35 +390,35 @@ public class PlantPlacementManager : MonoBehaviour
         Debug.Log("Placed " + spawnedPlant.name + " at cell " + cellPosition);
     }
 
-    // Pressing "1".."6" selects the defender at that index in VVEManager.Instance.SelectedDefenders
-    // (key "1" -> index 0), same as clicking its card in the top bar - VVEDefenderSelectBar
+    // Pressing "1".."6" selects the defender at that index in EVVManager.Instance.SelectedDefenders
+    // (key "1" -> index 0), same as clicking its card in the top bar - EVVDefenderSelectBar
     // instantiates that bar's cards in SelectedDefenders order, so the child index lines up
     // directly. Routed through SelectCharacter so the existing selected-card scale-up
-    // (VVEDefenderCard.SetSelected) and placement-preview rebuild happen exactly as they do for
+    // (EVVDefenderCard.SetSelected) and placement-preview rebuild happen exactly as they do for
     // a mouse click, instead of duplicating that logic here.
     void SelectDefenderHotkey(int index)
     {
-        if (VVEManager.Instance == null || index >= VVEManager.Instance.SelectedDefenders.Count)
+        if (EVVManager.Instance == null || index >= EVVManager.Instance.SelectedDefenders.Count)
         {
             return;
         }
 
-        VVEDefenderSelectBar selectBar = VVEUiWidgetRefs.Instance != null ? VVEUiWidgetRefs.Instance.defenderSelectionTopBar : null;
+        EVVDefenderSelectBar selectBar = EVVUiWidgetRefs.Instance != null ? EVVUiWidgetRefs.Instance.defenderSelectionTopBar : null;
         if (selectBar == null || selectBar.cardsContainer == null || index >= selectBar.cardsContainer.childCount)
         {
             return;
         }
 
-        VVEDefenderCard card = selectBar.cardsContainer.GetChild(index).GetComponent<VVEDefenderCard>();
+        EVVDefenderCard card = selectBar.cardsContainer.GetChild(index).GetComponent<EVVDefenderCard>();
         if (card != null)
         {
             SelectCharacter(card);
         }
     }
 
-    public void SelectCharacter(VVEDefenderCard slot)
+    public void SelectCharacter(EVVDefenderCard slot)
     {
-        if (VVEManager.Instance.MenuIsOpen)
+        if (EVVManager.Instance.MenuIsOpen)
             return;
 
         if (slot == null || slot.CharacterPrefab == null)
@@ -433,9 +433,9 @@ public class PlantPlacementManager : MonoBehaviour
 
         if (healingPotionUseController == null)
         {
-            healingPotionUseController = VVEHealingPotionUseController.Instance != null
-                ? VVEHealingPotionUseController.Instance
-                : FindAnyObjectByType<VVEHealingPotionUseController>();
+            healingPotionUseController = EVVHealingPotionUseController.Instance != null
+                ? EVVHealingPotionUseController.Instance
+                : FindAnyObjectByType<EVVHealingPotionUseController>();
         }
 
         if (healingPotionUseController != null)
@@ -487,7 +487,7 @@ public class PlantPlacementManager : MonoBehaviour
         }
     }
 
-    // Makes the remove-tool icon (VVERemoveToolCursor) follow the mouse whenever the tool is
+    // Makes the remove-tool icon (EVVRemoveToolCursor) follow the mouse whenever the tool is
     // active (toggled via X, clicked, or held via Shift, see IsRemoveToolActive), and sends it
     // back to its home position otherwise, only on an actual state change rather than every frame.
     private void UpdateRemoveToolCursor()
@@ -520,7 +520,7 @@ public class PlantPlacementManager : MonoBehaviour
         }
 
         CleanupOccupiedCells();
-        TryGetPlacedCharacterAt(GetMouseWorldPosition(), out _, out VVEDefender character);
+        TryGetPlacedCharacterAt(GetMouseWorldPosition(), out _, out EVVDefender character);
         removeTargetHighlight.Show(character);
     }
 
@@ -564,7 +564,7 @@ public class PlantPlacementManager : MonoBehaviour
 
     private Vector3 GetMouseWorldPosition()
     {
-        return VVEWorldPointer.GetPosition();
+        return EVVWorldPointer.GetPosition();
     }
 
     private void RebuildPlacementPreview()
@@ -604,7 +604,7 @@ public class PlantPlacementManager : MonoBehaviour
             && !occupiedCells.ContainsKey(new Vector2Int(column, row));
 
         Vector3 previewPosition = validCell
-            ? VVELaneDepth.WithLaneZ(boardGrid.GetCellCenterWorld(row, column) + (Vector3)placementOffset, row)
+            ? EVVLaneDepth.WithLaneZ(boardGrid.GetCellCenterWorld(row, column) + (Vector3)placementOffset, row)
             : mouseWorldPosition;
 
         placementPreview.transform.position = previewPosition;
@@ -658,10 +658,11 @@ public class PlantPlacementManager : MonoBehaviour
     private void CleanupOccupiedCells()
     {
         List<Vector2Int> clearedCells = new List<Vector2Int>();
-        foreach (KeyValuePair<Vector2Int, VVEDefender> occupiedCell in occupiedCells)
+        foreach (KeyValuePair<Vector2Int, EVVDefender> occupiedCell in occupiedCells)
         {
-            VVEDefender character = occupiedCell.Value;
-            if (character == null || character.Health == null || !character.Health.IsAlive)
+            EVVDefender character = occupiedCell.Value;
+            // A disabled defender has left the board while alive (a charmed Viking carried it off).
+            if (character == null || !character.isActiveAndEnabled || character.Health == null || !character.Health.IsAlive)
             {
                 clearedCells.Add(occupiedCell.Key);
             }

@@ -164,6 +164,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 0371fafe2121b084bb80b1e61fe085bc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1107847401754015791}
+    - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 0371fafe2121b084bb80b1e61fe085bc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6352686701372431990}
   m_SourcePrefab: {fileID: 4843985084834002234, guid: 0371fafe2121b084bb80b1e61fe085bc, type: 3}
 --- !u!1 &7069164359072360354 stripped
 GameObject:
@@ -203,8 +206,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
-  maxHealth: 100
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
+  maxHealth: 150
   destroyWhenDead: 1
   onTakeDamage:
     m_PersistentCalls:
@@ -220,7 +223,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7463907aaacc2354dbbe0bc8fd073735, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEEnemyVikingWalker
+  m_EditorClassIdentifier: Assembly-CSharp::EVVEnemyVikingWalker
   moveSpeed: 1.2
   reachDistance: 0.1
   attackStartDistance: 0.8
@@ -228,12 +231,15 @@ MonoBehaviour:
   overlapTolerance: 0.1
   attackDamage: 40
   firstAttackDamageMultiplier: 2
-  attackRecoilMultiplier: 1
+  attackRecoilMultiplier: 0
   useAttackAnimationEvents: 1
   fallbackFirstAttackDelay: 0.5
   fallbackAttackInterval: 1.5
   afterKillLockSeconds: 0.17
   boardDamageOnExit: 1
+  carryBoneName: body
+  carryOffset: {x: -0.05, y: 1.75, z: 0}
+  fallbackGrabDelay: 0.4
 --- !u!61 &6627431872690101013
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -291,7 +297,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bee1f306e5027f43a8657f366182449, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHitRecoil
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHitRecoil
   recoilTarget: {fileID: 8273867137036550081}
   applyInWorldSpace: 1
   returnAfterRecoil: 0
@@ -300,13 +306,9 @@ MonoBehaviour:
   recoilOutSeconds: 0.2
   recoilReturnSeconds: 0.2
   triggerStunAnimation: 1
-  animator: {fileID: 5879978050773949081}
-  stunTriggerName: Stun
-  stunHitChance: 0.25
+  stunHitChance: 0.444
   stunResistancePercent: 100
-  flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}
-  hitFlashSeconds: 0.08
   soundPlayer: {fileID: 0}
 --- !u!82 &6627431872690101015
 AudioSource:
@@ -416,7 +418,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a49d5cab163bbd41adf29b392364bcf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEAnimationSoundPlayer
+  m_EditorClassIdentifier: Assembly-CSharp::EVVAnimationSoundPlayer
   audioSource: {fileID: 0}
   attackSounds:
   - {fileID: 8300000, guid: a13cebecdfb1bb44dab41be90c72db7d, type: 3}
@@ -457,6 +459,20 @@ MonoBehaviour:
   m_Weight: 1
   m_AlwaysUpdate: 1
   m_SolverEditorData: []
+--- !u!114 &6352686701372431990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7069164359072360354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f882d5f01bc826a4d822c72d17df1163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVCharmResistance
+  immune: 0
+  resistancePercent: 0
 --- !u!4 &8273867137036550081 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7552582706839291426, guid: 0371fafe2121b084bb80b1e61fe085bc, type: 3}

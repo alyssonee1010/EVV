@@ -6,7 +6,7 @@ Use Unity 6000.5.0f1 or a compatible Unity 6 editor. MainMenu.unity is the entry
 
 For a quick C# verification outside Unity, run:
 
-    dotnet build VikingsVsEveryone.slnx
+    dotnet build EVV.slnx
 
 Unity remains the source of truth for scene serialization, asset imports, animation events, and Play Mode behavior.
 
@@ -18,14 +18,14 @@ Unity remains the source of truth for scene serialization, asset imports, animat
 - Keep feature-specific rules in the owning feature.
 - Reuse an existing utility before creating another implementation.
 
-Example: VVEWorldPointer owns mouse conversion and generic world hit-testing. Healing decides what counts as a valid healing target.
+Example: EVVWorldPointer owns mouse conversion and generic world hit-testing. Healing decides what counts as a valid healing target.
 
 ## Adding A Level
 
-1. Add an NN-NN.yml or NN-NN_name.yml file under Assets/StreamingAssets/Levels.
-2. Follow Assets/StreamingAssets/Levels/manual.md.
-3. Use unit ids configured on VVEWaveDirector.
-4. Use defender ids configured in VVEDefenderCatalog for unlocks.
+1. Add an NN-NN.yml or NN-NN_name.yml file under Assets/Levels.
+2. Follow Assets/Levels/manual.md.
+3. Use unit ids configured on EVVWaveDirector.
+4. Use defender ids configured in EVVDefenderCatalog for unlocks.
 5. Confirm the level appears in MainMenu stage selection.
 6. Test wave timing, completion, reset, unlocks, and next-level flow.
 
@@ -34,14 +34,14 @@ The available_units field is currently parsed but not enforced by the runtime. D
 ## Adding A Defender
 
 1. Create the prefab under Assets/Prefabs/Defenders.
-2. Add VVEDefender and VVEHealth.
+2. Add EVVDefender and EVVHealth.
 3. Add the relevant focused role component:
-   - VVERowProjectileShooter for ranged combat
-   - VVEBoardMeleeAttacker for melee combat
-   - VVEMinerMiningReward for diamond generation
-   - VVEWizardPotionReward for potion generation
+   - EVVRowProjectileShooter for ranged combat
+   - EVVBoardMeleeAttacker for melee combat
+   - EVVMinerMiningReward for diamond generation
+   - EVVWizardPotionReward for potion generation
 4. Add colliders and SpriteRenderers needed for combat and pointer interaction.
-5. Register a stable id, prefab, display name, cost, and default-unlock state in VVEDefenderCatalog.
+5. Register a stable id, prefab, display name, cost, and default-unlock state in EVVDefenderCatalog.
 6. Test loadout display, placement, lane sorting, damage, health-bar behavior, potion targeting, and removal.
 
 Do not create a separate health or pointer system for one defender.
@@ -49,25 +49,35 @@ Do not create a separate health or pointer system for one defender.
 ## Adding An Enemy
 
 1. Create the prefab under Assets/Prefabs/Vikings or another enemy folder.
-2. Add VVEHealth.
-3. Implement IVVEEnemyLaneWalker or reuse VVEEnemyVikingWalker.
+2. Add EVVHealth.
+3. Implement IEVVEnemyLaneWalker or reuse EVVEnemyVikingWalker.
 4. Add the collider, renderers, animator, and required animation events.
-5. Register a stable unit id and prefab in VVEWaveDirector's unit options.
+   If the art has no drawn outline, add EVVSilhouetteOutline to the prefab root so the outline is rendered around the body. List each limb (arm pieces, leg, head) as a group on the component so it keeps its outline where it crosses the body; unlisted sprites form the body.
+5. Register a stable unit id and prefab in EVVWaveDirector's unit options.
 6. Reference that id from level YAML.
-7. Test spawning, lane movement, defender attacks, death, director tracking, and base damage on exit.
+7. Decide how the enemy answers the Girl's charm: add EVVCharmResistance for a resistance percent or immunity (no component means always charmed). For the carried lure, set carryOffset on EVVEnemyVikingWalker to the rig's chest and, if the rig has a carry bone with another name, carryBoneName. A grab state is optional: without a Grab trigger the walker grabs after fallbackGrabDelay; with one, the grab clip must fire GrabTargetAnimationEvent.
+8. Test spawning, lane movement, defender attacks, death, director tracking, base damage on exit, and the charmed walk back.
 
 ## Adding A Potion
 
 Keep potion effects feature-specific while reusing shared infrastructure:
 
-1. Represent collectible potion resources through VVEBoardPickup or a focused extension of it.
+1. Represent collectible potion resources through EVVBoardPickup or a focused extension of it.
 2. Store inventory in the appropriate wallet/resource system.
-3. Use VVEWorldPointer for world target selection.
+3. Use EVVWorldPointer for world target selection.
 4. Supply a target type and validity filter specific to the potion.
 5. Keep aiming, spending, effect application, and feedback in a focused potion controller.
 6. Test invalid targets, cancellation, inventory spending, edge-of-board targets, and interaction priority.
 
-Do not put potion rules into VVEWorldPointer.
+Do not put potion rules into EVVWorldPointer.
+
+## Tuning The Charm Lure
+
+- Girl prefab, EVVCharmLure: charmChance; carriedOffset, carriedRotation and carriedScale for the pose in the Viking's arms; carriedSortingOrder for which of his parts she draws in front of; the heart sprite, offset, scale, rise and duration.
+- Viking prefabs, EVVCharmResistance: resistancePercent and immune. EVVEnemyVikingWalker: carryOffset (world units from his feet, before he turns), carryBoneName, fallbackGrabDelay.
+- Animation: Assets/Animation/Characters/Allies/Girl/girl_carried.anim is the loop she plays while carried and girl_running.anim the stride she plays after the carrier dies (a cut-out fake of a turn: lean, narrower body and head, mirror arm pumping, feet stepping); each Viking folder has a grab.anim (copied from that rig's reach clip) whose GrabTargetAnimationEvent marks the moment she is picked up. They are wired as the carried, running and grab states on the respective controllers.
+- Escape: escapeSpeed on EVVCharmLure; the run ends when she leaves the main camera's view.
+- The duel uses the Vikings' normal attack values, so their attackDamage, firstAttackDamageMultiplier and health decide who wins a fight over her.
 
 ## Validation
 
@@ -88,6 +98,6 @@ Before considering a gameplay change complete, verify the affected path and its 
 ## Known Technical Debt
 
 - PlantPlacementManager and CharPlacementManagement.cs do not share a name.
-- VVELevelSelectUI still provides the in-game selection/continuation flow alongside MainMenu stage selection.
+- EVVLevelSelectUI still provides the in-game selection/continuation flow alongside MainMenu stage selection.
 - available_units is parsed from level YAML but is not enforced.
 - Automated edit-mode and play-mode coverage is limited.

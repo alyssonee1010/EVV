@@ -1,6 +1,6 @@
-# Vikings vs Everyone
+# Everyone vs Vikings
 
-Vikings vs Everyone is a Unity 2D lane-defense game. Players build a defender loadout, place defenders on a tilemap board, collect generated resources, use potions, and stop Viking waves from reaching the chest.
+Everyone vs Vikings is a Unity 2D lane-defense game. Players build a defender loadout, place defenders on a tilemap board, collect generated resources, use potions, and stop Viking waves from reaching the chest.
 
 ## Run The Project
 
@@ -38,6 +38,7 @@ MainMenu is the build entry point. All selected levels run inside Assets/Scenes/
 | Assets/_Scripts/Levels | Level loading, waves, unlocks, and loadouts |
 | Assets/_Scripts/Pickups | Resource generation and collectible pickups |
 | Assets/_Scripts/Placement | Placement, removal, and gameplay click routing |
+| Assets/_Scripts/Rendering | Silhouette outline renderer feature and its character marker |
 | Assets/_Scripts/UI | Menus, counters, potion presentation, and health bars |
 
 ## Documentation

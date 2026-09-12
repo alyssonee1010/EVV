@@ -1,6 +1,6 @@
 # Level Files
 
-Level definitions live in Assets/Levels and are loaded by VVELevelLoader.
+Level definitions live in Assets/Levels and are loaded by EVVLevelLoader.
 
 ## File Naming
 
@@ -23,7 +23,7 @@ Levels are displayed in stage/level order using their stage and level fields.
 | waves | Ordered wave definitions |
 | unlocks | Defender ids unlocked after completion |
 
-Unlock ids must exist in VVEDefenderCatalog.
+Unlock ids must exist in EVVDefenderCatalog.
 
 The board is resized to `settings.rows` x `settings.columns` before the level's enemy lanes are built. The legacy `settings.lanes` field remains supported as an alias for `settings.rows`.
 
@@ -42,7 +42,7 @@ Use either time or time_offset for a wave. Relative time_offset scheduling is pr
 
 | Field | Purpose |
 | --- | --- |
-| unit | Unit id configured on VVEWaveDirector |
+| unit | Unit id configured on EVVWaveDirector |
 | count | Number of enemies in the group |
 | lane | Lane selector; random is the default |
 | time_offset | Delay after this wave starts |

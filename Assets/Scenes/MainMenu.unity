@@ -267,6 +267,7 @@ GameObject:
   - component: {fileID: 100011}
   - component: {fileID: 100012}
   - component: {fileID: 100013}
+  - component: {fileID: 100014}
   m_Layer: 0
   m_Name: MainMenuController
   m_TagString: Untagged
@@ -302,7 +303,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91c0d3d70b2d4288ad5012efd81abb0f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEMainMenuController
+  m_EditorClassIdentifier: Assembly-CSharp::EVVMainMenuController
   mainPanel: {fileID: 200022}
   stageSelectPanel: {fileID: 200102}
   settingsPanel: {fileID: 200202}
@@ -324,6 +325,18 @@ MonoBehaviour:
   defenderSpawnPoint: {fileID: 200301}
   idleBobHeight: 0.15
   idleBobDuration: 1.4
+--- !u!114 &100014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc36b464bd3c42c4912807202a764dbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &100013
 AudioSource:
   m_ObjectHideFlags: 0

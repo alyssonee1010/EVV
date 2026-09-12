@@ -640,7 +640,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2872673eaef36cd45842ab6b3292e6ca, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEBoardCharacter
+  m_EditorClassIdentifier: Assembly-CSharp::EVVBoardCharacter
   cost: 12
   maxHealth: 100
 --- !u!61 &-3986734287907090963
@@ -722,9 +722,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b922709e23510848a5a69cbc2548944, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHealth
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 100
   destroyWhenDead: 1
+  onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4736351253359882724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -736,7 +739,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd077c0a509254148a6850d2aa2527e1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVERowProjectileShooter
+  m_EditorClassIdentifier: Assembly-CSharp::EVVRowProjectileShooter
   projectilePrefab: {fileID: 6232256427891686088, guid: 96f065991fb406d49b09f769e3f611be, type: 3}
   firePoint: {fileID: 0}
   firePointOffset: {x: 0.75, y: 0.25}
@@ -752,7 +755,7 @@ MonoBehaviour:
   useProjectilePool: 1
   preloadProjectileCount: 6
   maxPooledProjectiles: 24
-  sightRange: 12
+  sightRange: 8
   minimumFireDistance: 0.2
   depthTolerance: 0.45
   playShootAnimation: 1
@@ -769,18 +772,18 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bee1f306e5027f43a8657f366182449, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEHitRecoil
+  m_EditorClassIdentifier: Assembly-CSharp::EVVHitRecoil
   recoilTarget: {fileID: 7188385330095936580}
   applyInWorldSpace: 1
   returnAfterRecoil: 1
   recoilDirection: {x: -1, y: 0}
-  recoilDistance: 0
+  recoilDistance: 0.12
   recoilOutSeconds: 0.04
   recoilReturnSeconds: 0.08
   triggerStunAnimation: 1
   animator: {fileID: -6347679577782153683}
   stunTriggerName: Stun
-  stunHitChance: 0.15
+  stunHitChance: 0
   stunResistancePercent: 25
   flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}
@@ -894,7 +897,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a49d5cab163bbd41adf29b392364bcf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVEAnimationSoundPlayer
+  m_EditorClassIdentifier: Assembly-CSharp::EVVAnimationSoundPlayer
   audioSource: {fileID: 0}
   attackSounds:
   - {fileID: 8300000, guid: 4facb443824f9694fa59ffa5e8fbc5ff, type: 3}

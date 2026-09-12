@@ -24,4 +24,4 @@ Each pack contains:
 `source_4x3_tilesheet.png` is the original generated sheet kept for reference.
 `AssetBackups/CementModular_BeforeNormalize` contains backups of the painted edits before the size normalization pass.
 
-For gameplay, use `Assets/Prefabs/VVE Board 20x6.prefab`. It is a real 20 column by 6 row board made from separate tile GameObjects. Each tile has a `VVETile` component with `Row` and `Column`, and the parent has a `VVEBoard` component with `GetTile(row, column)`.
+For gameplay, use `Assets/Prefabs/EVV Board 20x6.prefab`. It is a real 20 column by 6 row board made from separate tile GameObjects. Each tile has a `EVVTile` component with `Row` and `Column`, and the parent has a `EVVBoard` component with `GetTile(row, column)`.

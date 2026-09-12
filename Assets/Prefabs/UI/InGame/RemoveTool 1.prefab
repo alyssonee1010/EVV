@@ -196,7 +196,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c939afb42c04a3a8775c506e25477f9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VVERemoveToolCursor
+  m_EditorClassIdentifier: Assembly-CSharp::EVVRemoveToolCursor
 --- !u!1 &8797661092961762787
 GameObject:
   m_ObjectHideFlags: 0
