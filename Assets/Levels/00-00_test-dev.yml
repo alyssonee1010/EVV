@@ -1,0 +1,58 @@
+id: 00-00
+name: "Test DEV Level"
+
+# Developer stage (0): always listed in Stage Select and never gates the real levels.
+# One Viking every 5 seconds, cycling through the six lanes, with money to place anything.
+# Change the unit id below to test a different Viking.
+stage: 0
+level: 0
+
+settings:
+  rows: 6
+  columns: 10
+  starting_currency: 100000
+
+available_units:
+  - naked_viking
+
+# One wave, six spawn groups (one per lane) staggered by 5 seconds, each dropping a Viking
+# every 30 seconds: 36 Vikings over about three minutes, one every 5 seconds, lane after lane.
+waves:
+  - time_offset: 3
+    spawns:
+      - unit: naked_viking
+        lane: 0
+        count: 6
+        time_offset: 0
+        duration: 150
+        spacing: even
+      - unit: naked_viking
+        lane: 1
+        count: 6
+        time_offset: 5
+        duration: 150
+        spacing: even
+      - unit: naked_viking
+        lane: 2
+        count: 6
+        time_offset: 10
+        duration: 150
+        spacing: even
+      - unit: naked_viking
+        lane: 3
+        count: 6
+        time_offset: 15
+        duration: 150
+        spacing: even
+      - unit: naked_viking
+        lane: 4
+        count: 6
+        time_offset: 20
+        duration: 150
+        spacing: even
+      - unit: naked_viking
+        lane: 5
+        count: 6
+        time_offset: 25
+        duration: 150
+        spacing: even
