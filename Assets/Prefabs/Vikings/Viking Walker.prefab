@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: 5175382397795251117}
   - component: {fileID: -8736907945092346852}
   - component: {fileID: 1207561363942354827}
+  - component: {fileID: 4832774522323420023}
   m_Layer: 0
   m_Name: Viking Walker
   m_TagString: Untagged
@@ -395,6 +396,9 @@ MonoBehaviour:
   fallbackAttackInterval: 1.5
   afterKillLockSeconds: 0.8
   boardDamageOnExit: 1
+  carryBoneName: body
+  carryOffset: {x: -0.1, y: 1.45, z: 0}
+  fallbackGrabDelay: 0.4
 --- !u!61 &4946029505301886133
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -461,13 +465,9 @@ MonoBehaviour:
   recoilOutSeconds: 0.2
   recoilReturnSeconds: 0.2
   triggerStunAnimation: 1
-  animator: {fileID: 6799631004367217897}
-  stunTriggerName: Stun
   stunHitChance: 0.25
   stunResistancePercent: 100
-  flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}
-  hitFlashSeconds: 0.08
   soundPlayer: {fileID: 0}
 --- !u!82 &-8736907945092346852
 AudioSource:
@@ -602,6 +602,20 @@ MonoBehaviour:
   collectPitchMax: 2.5
   collectPitchStep: 0.1
   collectPitchResetInterval: 0.4
+--- !u!114 &4832774522323420023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030003902470211666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f882d5f01bc826a4d822c72d17df1163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVCharmResistance
+  immune: 0
+  resistancePercent: 0
 --- !u!1 &2124939556821316633
 GameObject:
   m_ObjectHideFlags: 0

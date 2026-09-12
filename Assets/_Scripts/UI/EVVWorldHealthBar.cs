@@ -63,6 +63,17 @@ public class EVVWorldHealthBar : MonoBehaviour
         UpdateBar();
     }
 
+    // Takes the bar off the character for good, for a defender that has left the board while
+    // still alive (a charmed Viking carrying it away). Health changes no longer bring it back.
+    public void Hide()
+    {
+        enabled = false;
+        if (barRoot != null)
+        {
+            barRoot.gameObject.SetActive(false);
+        }
+    }
+
     void EnsureBarObjects()
     {
         if (barRoot == null)

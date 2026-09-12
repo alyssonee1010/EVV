@@ -11,4 +11,21 @@ public static class TransformExtensions
             Object.Destroy(transform.GetChild(i).gameObject);
         }
     }
+
+    // Sets the local scale so the world scale matches worldScale, undoing the parents' scale.
+    // A mirrored parent (negative scale) keeps mirroring the child.
+    public static void SetLossyScale(this Transform transform, Vector3 worldScale)
+    {
+        Vector3 parentScale = transform.parent != null ? transform.parent.lossyScale : Vector3.one;
+        transform.localScale = new Vector3(
+            DivideByMagnitude(worldScale.x, parentScale.x),
+            DivideByMagnitude(worldScale.y, parentScale.y),
+            DivideByMagnitude(worldScale.z, parentScale.z));
+    }
+
+    static float DivideByMagnitude(float value, float divisor)
+    {
+        float magnitude = Mathf.Abs(divisor);
+        return magnitude > 0.0001f ? value / magnitude : value;
+    }
 }

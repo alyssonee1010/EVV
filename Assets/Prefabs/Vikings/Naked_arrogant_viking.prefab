@@ -807,6 +807,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7015687399585049548}
+    - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3396483217579526341}
   m_SourcePrefab: {fileID: 4843985084834002234, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}
 --- !u!4 &41565821307691594 stripped
 Transform:
@@ -915,6 +918,9 @@ MonoBehaviour:
   fallbackAttackInterval: 1.5
   afterKillLockSeconds: 0.17
   boardDamageOnExit: 1
+  carryBoneName: body
+  carryOffset: {x: -0.05, y: 1.2, z: 0}
+  fallbackGrabDelay: 0.4
 --- !u!61 &6482989231563859120
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1151,6 +1157,20 @@ MonoBehaviour:
   - name: Leg Left
     renderers:
     - {fileID: 6724242212268087420}
+--- !u!114 &3396483217579526341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883864788841850633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f882d5f01bc826a4d822c72d17df1163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVCharmResistance
+  immune: 0
+  resistancePercent: 0
 --- !u!212 &1276376037133639515 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: -7343883669765776913, guid: 3069b5d25388f8040a8eb5c8811e8f09, type: 3}

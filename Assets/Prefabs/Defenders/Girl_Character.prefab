@@ -117,13 +117,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1309137832890234447}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -0.038, y: -0.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8450975528663998641}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!212 &2916580080755481967
 SpriteRenderer:
   serializedVersion: 3
@@ -394,7 +394,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2492032609218377891}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0, w: -1}
   m_LocalPosition: {x: 0.376, y: 0.103, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -402,7 +402,7 @@ Transform:
   - {fileID: 5803780781781504073}
   - {fileID: 6962110437388369862}
   m_Father: {fileID: 2967843759154235216}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 360, z: 0}
 --- !u!1 &4542452916653912025
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,13 +428,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4542452916653912025}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0, w: -1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1825059651503712262}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 360, z: 0}
 --- !u!212 &7201526245479982967
 SpriteRenderer:
   serializedVersion: 3
@@ -612,13 +612,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5290959106842025809}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0, w: -1}
   m_LocalPosition: {x: 0, y: -0.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2967843759154235216}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 360, z: 0}
 --- !u!212 &6353885262025736696
 SpriteRenderer:
   serializedVersion: 3
@@ -695,6 +695,7 @@ GameObject:
   - component: {fileID: 1922743843835358041}
   - component: {fileID: 1915457825855981097}
   - component: {fileID: 4019866799620505263}
+  - component: {fileID: 3057719194923299391}
   m_Layer: 0
   m_Name: Girl_Character
   m_TagString: Untagged
@@ -773,6 +774,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 150
   destroyWhenDead: 1
+  onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6587178015064576824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -793,13 +797,9 @@ MonoBehaviour:
   recoilOutSeconds: 0.04
   recoilReturnSeconds: 0.06
   triggerStunAnimation: 1
-  animator: {fileID: 611986551926976646}
-  stunTriggerName: Stun
   stunHitChance: 0.606
   stunResistancePercent: 100
-  flashOnHit: 1
   hitFlashTint: {r: 1, g: 0.22, b: 0.16, a: 1}
-  hitFlashSeconds: 0.08
   soundPlayer: {fileID: 0}
 --- !u!114 &1922743843835358041
 MonoBehaviour:
@@ -820,6 +820,7 @@ MonoBehaviour:
   attackDirection: {x: 1, y: 0}
   depthTolerance: 0.45
   attackTriggerName: Attack
+  soundPlayer: {fileID: 0}
 --- !u!82 &1915457825855981097
 AudioSource:
   m_ObjectHideFlags: 0
@@ -951,6 +952,31 @@ MonoBehaviour:
   collectPitchMax: 2.5
   collectPitchStep: 0.1
   collectPitchResetInterval: 0.4
+--- !u!114 &3057719194923299391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6013597141670104860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544375052f1169f4aa221351b95075f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVCharmLure
+  charmChance: 1
+  carriedOffset: {x: -0.1, y: 0, z: 0}
+  carriedRotation: -80
+  carriedScale: 0.8
+  carriedSortingOrder: 200
+  hiddenWhileCarried:
+  - {fileID: 1309137832890234447}
+  escapeSpeed: 2.5
+  heartSprite: {fileID: 21300000, guid: 34fcaad19845c17459a55c5da6970a3d, type: 3}
+  heartOffset: {x: 0, y: 0.2}
+  heartScale: 0.45
+  heartRise: 0.35
+  heartSeconds: 0.9
 --- !u!1 &8008170804046139565
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,13 +1002,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8008170804046139565}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0, w: -1}
   m_LocalPosition: {x: 0.031, y: -0.047, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1825059651503712262}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 360, z: 0}
 --- !u!212 &2967200019874625346
 SpriteRenderer:
   serializedVersion: 3
