@@ -425,9 +425,21 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         attackTargetDefender = null;
         charmTarget = lure;
         hasCharmTarget = true;
-        isClaimant = lure.TryClaim(gameObject);
+        if (lure.TryClaim(gameObject))
+        {
+            TakeClaim();
+        }
+
         StartGrab();
         return true;
+    }
+
+    // Holding the claim already puts the Viking on the defenders' side: from the heart on, neither
+    // the archers nor the lure herself hit the one reaching for her.
+    void TakeClaim()
+    {
+        isClaimant = true;
+        EVVTargetRegistry.SetCharmed(this, true);
     }
 
     void StartGrab()
@@ -455,7 +467,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         {
             if (charmTarget.TryClaim(gameObject))
             {
-                isClaimant = true;
+                TakeClaim();
                 StartGrab();
             }
 
@@ -482,9 +494,8 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         }
     }
 
-    // Picks the lure up, turns around and heads back to the spawn point. From here on the Viking
-    // is on the defenders' side: they stop shooting him, the other Vikings come for the lure and
-    // he fights them on the way out.
+    // Picks the lure up, turns around and heads back to the spawn point, fighting the other
+    // Vikings that come for her on the way out.
     void CompleteGrab()
     {
         if (charmTarget == null || !charmTarget.Grab(gameObject, GetCarryPoint()))
@@ -494,14 +505,18 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         }
 
         carriedLure = charmTarget;
+        isCarrying = true;
         ClearCharmTarget();
         TurnAround();
-        isCarrying = true;
-        EVVTargetRegistry.MoveToCharmed(this);
     }
 
     void ClearCharmTarget()
     {
+        if (isClaimant && !isCarrying)
+        {
+            EVVTargetRegistry.SetCharmed(this, false);
+        }
+
         charmTarget = null;
         hasCharmTarget = false;
         isClaimant = false;

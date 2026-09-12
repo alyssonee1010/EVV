@@ -38,12 +38,20 @@ public static class EVVTargetRegistry
         charmedEnemies.Remove(enemy);
     }
 
-    public static void MoveToCharmed(IEVVEnemyLaneWalker enemy)
+    // Moves a walker between the enemy and charmed lists.
+    public static void SetCharmed(IEVVEnemyLaneWalker enemy, bool charmed)
     {
-        enemies.Remove(enemy);
-        if (enemy != null && !charmedEnemies.Contains(enemy))
+        if (enemy == null)
         {
-            charmedEnemies.Add(enemy);
+            return;
+        }
+
+        List<IEVVEnemyLaneWalker> from = charmed ? enemies : charmedEnemies;
+        List<IEVVEnemyLaneWalker> to = charmed ? charmedEnemies : enemies;
+        from.Remove(enemy);
+        if (!to.Contains(enemy))
+        {
+            to.Add(enemy);
         }
     }
 
