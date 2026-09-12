@@ -238,7 +238,7 @@ public class VVELevelSelectUI : MonoBehaviour
             List<VVELevelDefinition> allLevels = VVELevelLoader.DiscoverLevels();
             if (allLevels.Count == 0)
             {
-                Debug.LogWarning("No level files found in Assets/Levels.");
+                Debug.LogWarning("No level files found in Assets/StreamingAssets/Levels.");
             }
 
             levels = VVELevelCompletion.GetAvailableLevels(allLevels);

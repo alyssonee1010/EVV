@@ -275,7 +275,7 @@ public class VVEMainMenuController : MonoBehaviour
         List<VVELevelDefinition> allLevels = VVELevelLoader.DiscoverLevels();
         if (allLevels.Count == 0)
         {
-            Debug.LogWarning("No level files found in Assets/Levels.");
+            Debug.LogWarning("No level files found in Assets/StreamingAssets/Levels.");
         }
 
         List<VVELevelDefinition> levels = VVELevelCompletion.GetAvailableLevels(allLevels);

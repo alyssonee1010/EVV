@@ -9,9 +9,13 @@ public static class VVELevelLoader
 {
     static readonly Regex FileNamePattern = new Regex(@"^\d{2}-\d{2}(_.*)?\.yml$", RegexOptions.IgnoreCase);
 
+    // Application.dataPath points at the Assets folder in the Editor but at "<Player>_Data" in a
+    // build, where raw source files like these .yml level definitions don't exist - only
+    // StreamingAssets is guaranteed to ship its contents verbatim and be readable via System.IO
+    // on both the Editor and a built desktop Player.
     public static string LevelsDirectory
     {
-        get { return Path.Combine(Application.dataPath, "Levels"); }
+        get { return Path.Combine(Application.streamingAssetsPath, "Levels"); }
     }
 
     public static List<VVELevelDefinition> DiscoverLevels()

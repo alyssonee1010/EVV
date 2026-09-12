@@ -9,7 +9,7 @@ Vikings vs Everyone is a Unity 2D lane-defense game.
 - Unity: 6000.5.0f1
 - Entry scene: Assets/Scenes/MainMenu.unity
 - Shared gameplay scene: Assets/Scenes/Level 1.unity
-- Level data: Assets/Levels/*.yml
+- Level data: Assets/StreamingAssets/Levels/*.yml
 - C# verification: dotnet build VikingsVsEveryone.slnx
 
 Unity Play Mode remains required for scene, animation, asset-import, and runtime interaction verification.
@@ -20,7 +20,7 @@ Unity Play Mode remains required for scene, animation, asset-import, and runtime
 - docs/GAMEPLAY.md for the current game flow
 - docs/ARCHITECTURE.md for system ownership
 - docs/DEVELOPMENT.md for extension and validation workflows
-- Assets/Levels/manual.md for the level schema
+- Assets/StreamingAssets/Levels/manual.md for the level schema
 - docs/TODO.md for maintained unfinished work
 
 ## Important Ownership Rules

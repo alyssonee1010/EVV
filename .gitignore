@@ -85,6 +85,13 @@ crashlytics-build.properties
 # TestRunner generated files
 InitTestScene*.unity*
 
+# com.unity.test-framework.performance writes these into Assets/Resources on every build
+# (it's a transitive dependency via com.unity.collections, not something this project uses)
+/Assets/Resources/PerformanceTestRunInfo.json
+/Assets/Resources/PerformanceTestRunInfo.json.meta
+/Assets/Resources/PerformanceTestRunSettings.json
+/Assets/Resources/PerformanceTestRunSettings.json.meta
+
 # Addressables default ignores, before user customizations
 /ServerData
 /[Aa]ssets/StreamingAssets/aa*

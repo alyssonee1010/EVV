@@ -22,8 +22,8 @@ Example: VVEWorldPointer owns mouse conversion and generic world hit-testing. He
 
 ## Adding A Level
 
-1. Add an NN-NN.yml or NN-NN_name.yml file under Assets/Levels.
-2. Follow Assets/Levels/manual.md.
+1. Add an NN-NN.yml or NN-NN_name.yml file under Assets/StreamingAssets/Levels.
+2. Follow Assets/StreamingAssets/Levels/manual.md.
 3. Use unit ids configured on VVEWaveDirector.
 4. Use defender ids configured in VVEDefenderCatalog for unlocks.
 5. Confirm the level appears in MainMenu stage selection.

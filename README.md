@@ -9,7 +9,7 @@ Vikings vs Everyone is a Unity 2D lane-defense game. Players build a defender lo
 3. Open Assets/Scenes/MainMenu.unity.
 4. Enter Play Mode.
 
-MainMenu is the build entry point. All selected levels run inside Assets/Scenes/Level 1.unity using data loaded from Assets/Levels.
+MainMenu is the build entry point. All selected levels run inside Assets/Scenes/Level 1.unity using data loaded from Assets/StreamingAssets/Levels.
 
 ## Controls
 
@@ -28,7 +28,7 @@ MainMenu is the build entry point. All selected levels run inside Assets/Scenes/
 
 | Path | Purpose |
 | --- | --- |
-| Assets/Levels | Data-driven level and wave definitions |
+| Assets/StreamingAssets/Levels | Data-driven level and wave definitions |
 | Assets/Scenes | Main menu and gameplay scenes |
 | Assets/Prefabs/Defenders | Placeable defender prefabs |
 | Assets/Prefabs/Vikings | Enemy prefabs |
@@ -45,6 +45,6 @@ MainMenu is the build entry point. All selected levels run inside Assets/Scenes/
 - docs/GAMEPLAY.md describes the current player-facing flow and mechanics.
 - docs/ARCHITECTURE.md explains system ownership and runtime communication.
 - docs/DEVELOPMENT.md contains extension workflows and validation guidance.
-- Assets/Levels/manual.md documents the level YAML format.
+- Assets/StreamingAssets/Levels/manual.md documents the level YAML format.
 - docs/TODO.md contains the maintained backlog.
 - AGENTS.md records the project coding guidelines.
