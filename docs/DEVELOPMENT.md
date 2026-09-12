@@ -75,7 +75,9 @@ Do not put potion rules into EVVWorldPointer.
 
 - Girl prefab, EVVCharmLure: charmChance; carriedOffset, carriedRotation and carriedScale for the pose in the Viking's arms; carriedSortingOrder for which of his parts she draws in front of; the heart sprite, offset, scale, rise and duration.
 - Viking prefabs, EVVCharmResistance: resistancePercent and immune. EVVEnemyVikingWalker: carryOffset (world units from his feet, before he turns), carryBoneName, fallbackGrabDelay.
-- Animation: Assets/Animation/Characters/Allies/Girl/girl_carried.anim is the loop she plays while carried; each Viking folder has a grab.anim (copied from that rig's reach clip) whose GrabTargetAnimationEvent marks the moment she is picked up. Both are wired as carried and grab states on the respective controllers.
+- Animation: Assets/Animation/Characters/Allies/Girl/girl_carried.anim is the loop she plays while carried and, for now, also the running state she plays after the carrier dies (assign a dedicated clip to the running state to change that); each Viking folder has a grab.anim (copied from that rig's reach clip) whose GrabTargetAnimationEvent marks the moment she is picked up. They are wired as the carried, running and grab states on the respective controllers.
+- Escape: escapeSpeed on EVVCharmLure; the run ends when she leaves the main camera's view.
+- The duel uses the Vikings' normal attack values, so their attackDamage, firstAttackDamageMultiplier and health decide who wins a fight over her.
 
 ## Validation
 

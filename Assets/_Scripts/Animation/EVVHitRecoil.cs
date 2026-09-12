@@ -270,7 +270,7 @@ public class EVVHitRecoil : MonoBehaviour
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
         foreach (SpriteRenderer renderer in renderers)
         {
-            if (renderer == null || IsHealthBarRenderer(renderer))
+            if (renderer == null || !IsOwnRenderer(renderer))
             {
                 continue;
             }
@@ -292,20 +292,22 @@ public class EVVHitRecoil : MonoBehaviour
         hitFlashOriginalColors.Clear();
     }
 
-    bool IsHealthBarRenderer(SpriteRenderer renderer)
+    // Skips the health bar and any other character nested under this one (a carried charm lure
+    // keeps its own colors when its carrier is hit).
+    bool IsOwnRenderer(SpriteRenderer renderer)
     {
         Transform candidate = renderer.transform;
         while (candidate != null && candidate != transform)
         {
-            if (candidate.name == "Health Bar")
+            if (candidate.name == "Health Bar" || candidate.GetComponent<EVVHealth>() != null)
             {
-                return true;
+                return false;
             }
 
             candidate = candidate.parent;
         }
 
-        return false;
+        return true;
     }
 
     Vector3 GetCurrentPushOffset()

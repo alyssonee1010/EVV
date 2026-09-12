@@ -107,8 +107,9 @@ public class EVVDamageProjectile : MonoBehaviour
             return;
         }
 
+        // Only registered enemies take hits: a charmed Viking carrying the lure is on our side now.
         IEVVEnemyLaneWalker enemy = GetEnemyLaneWalker(other);
-        if (!TryGetEnemyObject(enemy, out _) || enemy.Health == null || !enemy.Health.IsAlive)
+        if (!EVVTargetRegistry.IsEnemy(enemy) || !TryGetEnemyObject(enemy, out _) || enemy.Health == null || !enemy.Health.IsAlive)
         {
             return;
         }

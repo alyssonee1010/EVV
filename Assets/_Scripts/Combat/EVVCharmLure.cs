@@ -3,12 +3,14 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 // Defender role: a Viking that reaches this defender may be charmed instead of attacking it.
-// A charmed Viking picks the lure up and carries it back off the board (EVVEnemyVikingWalker
-// owns that walk). The lure owns the charm rule and how it looks while carried.
+// A charmed Viking picks the lure up and carries it back off the board, fighting the other
+// Vikings on the way (EVVEnemyVikingWalker owns that walk). The lure owns the charm rule, how it
+// looks while carried, and its run for the defenders' side if the carrier dies.
 [RequireComponent(typeof(EVVDefender))]
 public class EVVCharmLure : MonoBehaviour
 {
     const string CarriedTriggerName = "Carried";
+    const string RunningTriggerName = "Running";
     const string CarriedPoseName = "Carried Pose";
     const string HeartName = "Charm Heart";
     const int HeartSortingOrder = 1000;
@@ -30,6 +32,10 @@ public class EVVCharmLure : MonoBehaviour
     [Tooltip("Objects switched off while carried, such as the ground shadow.")]
     [SerializeField] GameObject[] hiddenWhileCarried;
 
+    [Header("Escape")]
+    [Tooltip("Run speed once the carrier dies, heading for the defenders' end of the row.")]
+    [SerializeField, Min(0.1f)] float escapeSpeed = 2.5f;
+
     [Header("Heart Popup")]
     [SerializeField] Sprite heartSprite;
     [Tooltip("World offset from the top-center of the Viking's sprites.")]
@@ -38,7 +44,30 @@ public class EVVCharmLure : MonoBehaviour
     [SerializeField, Min(0f)] float heartRise = 0.35f;
     [SerializeField, Min(0.05f)] float heartSeconds = 0.9f;
 
+    Vector3 boardPosition;
+    Vector3 boardScale;
+    Camera escapeCamera;
+    float escapeDirection;
+    bool isEscaping;
+
     public bool IsCarried { get; private set; }
+
+    void Update()
+    {
+        if (!isEscaping)
+        {
+            return;
+        }
+
+        transform.position += new Vector3(escapeDirection * escapeSpeed * Time.deltaTime, 0f, 0f);
+
+        // Out of the map means out of view; the lure is spent either way.
+        float viewportX = escapeCamera != null ? escapeCamera.WorldToViewportPoint(transform.position).x : -1f;
+        if (viewportX < -0.1f || viewportX > 1.1f)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     // Called by a Viking that just reached the lure. Rolls the lure's chance against his
     // resistance; a charmed Viking gets a heart over his head and should then grab the lure.
@@ -81,6 +110,8 @@ public class EVVCharmLure : MonoBehaviour
         }
 
         IsCarried = true;
+        boardPosition = transform.position;
+        boardScale = transform.localScale;
 
         EVVDefender defender = GetComponent<EVVDefender>();
         if (defender != null)
@@ -136,10 +167,54 @@ public class EVVCharmLure : MonoBehaviour
             sortingGroup.sortingOrder = carriedSortingOrder;
         }
 
-        Animator animator = GetComponent<Animator>();
-        if (animator != null && HasTrigger(animator, CarriedTriggerName))
+        SetTrigger(CarriedTriggerName);
+    }
+
+    // The carrier died: drop to the ground where he fell and run along the row towards the
+    // defenders' end until off screen. Called before the carrier is destroyed, so leaving his
+    // hierarchy here keeps the lure alive.
+    public void Escape(Vector3 rowEnd)
+    {
+        if (!IsCarried || isEscaping)
         {
-            animator.SetTrigger(CarriedTriggerName);
+            return;
+        }
+
+        isEscaping = true;
+        float x = transform.position.x;
+        transform.SetParent(null, false);
+        transform.position = new Vector3(x, boardPosition.y, boardPosition.z);
+        transform.rotation = Quaternion.identity;
+        transform.localScale = boardScale;
+        escapeDirection = rowEnd.x < x ? -1f : 1f;
+        escapeCamera = Camera.main;
+
+        if (hiddenWhileCarried != null)
+        {
+            foreach (GameObject hidden in hiddenWhileCarried)
+            {
+                if (hidden != null)
+                {
+                    hidden.SetActive(true);
+                }
+            }
+        }
+
+        SortingGroup sortingGroup = GetComponent<SortingGroup>();
+        if (sortingGroup != null)
+        {
+            sortingGroup.sortingOrder = 0;
+        }
+
+        SetTrigger(RunningTriggerName);
+    }
+
+    void SetTrigger(string triggerName)
+    {
+        Animator animator = GetComponent<Animator>();
+        if (animator != null && HasTrigger(animator, triggerName))
+        {
+            animator.SetTrigger(triggerName);
         }
     }
 

@@ -80,13 +80,15 @@ Runtime world-space bar that listens to EVVHealth. Defender bars are hidden at f
 
 ### EVVCharmLure
 
-Defender role for the Girl. It owns the charm rule (its own chance scaled by the Viking's EVVCharmResistance, which holds a resistance percent and an immunity flag) and everything about being carried: it drops out of EVVTargetRegistry by disabling its EVVDefender, hides its health bar and shadow, reparents itself under a "Carried Pose" frame on the Viking's carry point, and fires its animator's Carried trigger. The heart popup over the Viking is also spawned here.
+Defender role for the Girl. It owns the charm rule (its own chance scaled by the Viking's EVVCharmResistance, which holds a resistance percent and an immunity flag) and everything about being carried: it drops out of EVVTargetRegistry by disabling its EVVDefender, hides its health bar and shadow, reparents itself under a "Carried Pose" frame on the Viking's carry point, and fires its animator's Carried trigger. The heart popup over the Viking is also spawned here. When the carrier dies it calls Escape: the lure leaves his hierarchy before he is destroyed, lands upright where he fell, plays Running and moves along the row towards the defenders' end until it is outside the main camera's view.
 
 ## Enemy Layer
 
 IEVVEnemyLaneWalker defines the contract used by lane scheduling and targeting. EVVEnemyVikingWalker is the current concrete walker and owns movement, defender attacks, death handling, and base damage on exit.
 
 The walker also owns the charmed path: when the defender it reaches is an EVVCharmLure that charms him, it fires the Grab trigger (or waits fallbackGrabDelay without one), hands the lure its carry point on GrabTargetAnimationEvent, mirrors the root scale and walks back to the lane start, where it destroys itself without board damage. The carry point is a world-aligned, world-sized empty created in Awake under the bone named carryBoneName (body on the current rigs), so a carried lure rides the walk cycle; carryOffset places it per rig.
+
+Attack targets are EVVHealth components rather than defenders, so Vikings can fight each other. EVVTargetRegistry keeps charmed walkers in a separate CharmedEnemies list: a carrier moves there on the grab, which takes him off the lists that shooters, melee defenders and projectiles read (projectile trigger hits and melee targets also check EVVTargetRegistry.IsEnemy), and puts him in front of the remaining enemies, who target charmed walkers in their lane after defenders. A carrier targets enemies in his lane instead. His EVVHealth.Died event hands the carried lure its escape.
 
 ## Economy And Pickup Layer
 

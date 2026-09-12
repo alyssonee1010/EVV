@@ -127,7 +127,7 @@ public class EVVBoardMeleeAttacker : MonoBehaviour
 
     bool IsValidTarget(IEVVEnemyLaneWalker enemy)
     {
-        return TryGetEnemyObject(enemy, out _) && enemy.Health != null && enemy.Health.IsAlive;
+        return EVVTargetRegistry.IsEnemy(enemy) && TryGetEnemyObject(enemy, out _) && enemy.Health != null && enemy.Health.IsAlive;
     }
 
     bool IsInRange(IEVVEnemyLaneWalker enemy)
