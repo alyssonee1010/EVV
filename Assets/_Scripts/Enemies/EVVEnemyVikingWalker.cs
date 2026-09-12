@@ -7,6 +7,8 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 {
     const string AttackTriggerName = "Attack";
     const string AfterKillTriggerName = "AfterKill";
+    const string GrabTriggerName = "Grab";
+    const string CarryPointName = "Carry Point";
     const string WalkStateName = "walk";
     const string WalkingStateName = "walking";
 
@@ -34,6 +36,14 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     [Header("Board Damage")]
     [SerializeField, Min(1)] int boardDamageOnExit = 1;
 
+    [Header("Charm")]
+    [Tooltip("Bone a charmed lure is held by, so it rides the walk cycle. Falls back to the root when missing.")]
+    [SerializeField] string carryBoneName = "body";
+    [Tooltip("Where the lure is held: world units from the Viking's feet while he still faces left.")]
+    [SerializeField] Vector3 carryOffset = new Vector3(-0.05f, 1.75f, 0f);
+    [Tooltip("Delay before the grab when the animator has no Grab trigger to fire the animation event.")]
+    [SerializeField, Min(0f)] float fallbackGrabDelay = 0.4f;
+
     EVVHealth health;
     EVVHitRecoil stunProfile;
     Animator animator;
@@ -45,6 +55,15 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     float walkDirection = -1f;
     float fallbackAttackTimer;
     float afterKillTimer;
+    EVVCharmLure charmTarget;
+    EVVCharmLure resistedLure;
+    bool hasCharmTarget;
+    bool waitingForGrabEvent;
+    bool hasGrabTrigger;
+    float grabTimer;
+    bool isRetreating;
+    Vector3 retreatPosition;
+    Transform carryPoint;
 
     public int LaneIndex { get; private set; }
     public EVVHealth Health => health;
@@ -60,6 +79,10 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         health = GetComponent<EVVHealth>();
         stunProfile = GetComponent<EVVHitRecoil>();
         animator = GetComponent<Animator>();
+        hasGrabTrigger = animator != null && HasAnimatorParameter(GrabTriggerName);
+        // Created before any animation plays, so a carried lure's tilt is relative to the rest pose
+        // and only sways with the walk cycle, whatever pose the grab happened in.
+        GetCarryPoint();
     }
 
     void OnEnable()
@@ -100,6 +123,18 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
             return;
         }
 
+        if (isRetreating)
+        {
+            Retreat();
+            return;
+        }
+
+        if (hasCharmTarget)
+        {
+            TickGrab();
+            return;
+        }
+
         if (hasAttackTarget)
         {
             if (attackTarget == null || attackTarget.Health == null || !attackTarget.Health.IsAlive)
@@ -118,6 +153,11 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
         if (TryFindAttackTarget())
         {
+            if (TryStartCharm(attackTarget))
+            {
+                return;
+            }
+
             hasAttackTarget = true;
             fallbackAttackTimer = fallbackFirstAttackDelay;
             if (animator != null)
@@ -149,6 +189,10 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         attackTarget = null;
         fallbackAttackTimer = 0f;
         afterKillTimer = 0f;
+        retreatPosition = startPosition;
+        isRetreating = false;
+        ClearCharmTarget();
+        resistedLure = null;
         walkDirection = Mathf.Sign(endPosition.x - startPosition.x);
         if (Mathf.Approximately(walkDirection, 0f))
         {
@@ -267,11 +311,158 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         hasAttackTarget = false;
         fallbackAttackTimer = 0f;
         afterKillTimer = 0f;
+        ClearCharmTarget();
         if (animator != null)
         {
             animator.ResetTrigger(AttackTriggerName);
             PlayWalkState();
         }
+    }
+
+    // A lure in front of the Viking gets one charm roll per encounter. Charmed: he reaches for it
+    // (Grab animation, or a plain delay without one) instead of attacking. Resisted: he attacks it
+    // like any defender and never rolls for that lure again.
+    bool TryStartCharm(EVVDefender target)
+    {
+        EVVCharmLure lure = target != null ? target.GetComponent<EVVCharmLure>() : null;
+        if (lure == null || lure == resistedLure)
+        {
+            return false;
+        }
+
+        if (!lure.TryCharm(gameObject))
+        {
+            resistedLure = lure;
+            return false;
+        }
+
+        attackTarget = null;
+        charmTarget = lure;
+        hasCharmTarget = true;
+        grabTimer = fallbackGrabDelay;
+        waitingForGrabEvent = hasGrabTrigger;
+        if (hasGrabTrigger)
+        {
+            animator.ResetTrigger(AttackTriggerName);
+            animator.SetTrigger(GrabTriggerName);
+        }
+
+        return true;
+    }
+
+    void TickGrab()
+    {
+        if (charmTarget == null || !charmTarget.isActiveAndEnabled)
+        {
+            ResumeWalking();
+            return;
+        }
+
+        if (waitingForGrabEvent)
+        {
+            return;
+        }
+
+        grabTimer -= Time.deltaTime;
+        if (grabTimer <= 0f)
+        {
+            CompleteGrab();
+        }
+    }
+
+    public void GrabTargetAnimationEvent()
+    {
+        if (hasCharmTarget)
+        {
+            CompleteGrab();
+        }
+    }
+
+    // Picks the lure up, turns around and heads back to the spawn point. The Viking stays a
+    // living enemy on the way out, so defenders can still shoot him; if they do, the lure goes
+    // down with him.
+    void CompleteGrab()
+    {
+        if (charmTarget != null)
+        {
+            charmTarget.Grab(GetCarryPoint());
+        }
+
+        ClearCharmTarget();
+        TurnAround();
+        isRetreating = true;
+    }
+
+    void ClearCharmTarget()
+    {
+        charmTarget = null;
+        hasCharmTarget = false;
+        waitingForGrabEvent = false;
+        grabTimer = 0f;
+        if (hasGrabTrigger)
+        {
+            animator.ResetTrigger(GrabTriggerName);
+        }
+    }
+
+    void Retreat()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, retreatPosition, moveSpeed * Time.deltaTime);
+        if ((transform.position - retreatPosition).sqrMagnitude <= reachDistance * reachDistance)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void TurnAround()
+    {
+        walkDirection = -walkDirection;
+        Vector3 scale = transform.localScale;
+        scale.x = -scale.x;
+        transform.localScale = scale;
+    }
+
+    // World-aligned, world-sized point under the carry bone, so the lure bobs and leans with the
+    // walk cycle instead of sliding rigidly with the root. Undoing the rig's scale here lets the
+    // lure keep its board size and its pose offsets stay in world units.
+    Transform GetCarryPoint()
+    {
+        if (carryPoint != null)
+        {
+            return carryPoint;
+        }
+
+        Transform bone = FindChildByName(transform, carryBoneName);
+        carryPoint = new GameObject(CarryPointName).transform;
+        carryPoint.SetParent(bone != null ? bone : transform, false);
+        carryPoint.SetLossyScale(Vector3.one);
+        carryPoint.position = transform.position + carryOffset;
+        carryPoint.rotation = transform.rotation;
+        return carryPoint;
+    }
+
+    static Transform FindChildByName(Transform root, string childName)
+    {
+        if (string.IsNullOrEmpty(childName))
+        {
+            return null;
+        }
+
+        foreach (Transform child in root)
+        {
+            if (child.name == childName)
+            {
+                return child;
+            }
+
+            Transform nested = FindChildByName(child, childName);
+            if (nested != null)
+            {
+                return nested;
+            }
+        }
+
+        return null;
     }
 
     void HandleKilledAttackTarget()

@@ -8,6 +8,7 @@ Keep this file limited to actionable work that is not already implemented. Put b
 - Add fire/status-effect support through a reusable status module, then integrate it with the relevant attacks.
 - Add the confirmed future potion types using the shared EVVWorldPointer targeting utility and focused effect controllers.
 - Improve pickup readability and collection feedback.
+- Decide whether a charm lure carried by a Viking who is shot down should drop back onto the board instead of being lost with him.
 
 ## Content
 

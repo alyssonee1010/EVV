@@ -661,7 +661,8 @@ public class PlantPlacementManager : MonoBehaviour
         foreach (KeyValuePair<Vector2Int, EVVDefender> occupiedCell in occupiedCells)
         {
             EVVDefender character = occupiedCell.Value;
-            if (character == null || character.Health == null || !character.Health.IsAlive)
+            // A disabled defender has left the board while alive (a charmed Viking carried it off).
+            if (character == null || !character.isActiveAndEnabled || character.Health == null || !character.Health.IsAlive)
             {
                 clearedCells.Add(occupiedCell.Key);
             }
