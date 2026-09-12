@@ -104,6 +104,7 @@ public static class EVVLevelLoader
                 level.BoardRows = GetInt(settings, "rows", GetInt(settings, "lanes", level.BoardRows));
                 level.BoardColumns = GetInt(settings, "columns", level.BoardColumns);
                 level.StartingCurrency = GetInt(settings, "starting_currency", level.StartingCurrency);
+                level.Endless = GetBool(settings, "endless", level.Endless);
             }
         }
 
@@ -283,6 +284,28 @@ public static class EVVLevelLoader
 
         int parsed;
         if (value is string && int.TryParse((string)value, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsed))
+        {
+            return parsed;
+        }
+
+        return defaultValue;
+    }
+
+    static bool GetBool(Dictionary<string, object> map, string key, bool defaultValue)
+    {
+        object value;
+        if (!map.TryGetValue(key, out value) || value == null)
+        {
+            return defaultValue;
+        }
+
+        if (value is bool)
+        {
+            return (bool)value;
+        }
+
+        bool parsed;
+        if (value is string && bool.TryParse((string)value, out parsed))
         {
             return parsed;
         }

@@ -145,25 +145,37 @@ public class EVVWaveDirector : MonoBehaviour
 
     IEnumerator RunLevel(EVVLevelDefinition level)
     {
-        foreach (EVVWaveDefinition wave in level.Waves)
+        // Wave times count from the start of the current pass over the wave list: the level
+        // start, or for an endless level the end of the previous pass.
+        float passStartTime = LevelStartTime;
+        do
         {
-            float waitUntil = LevelStartTime + wave.Time;
-            while (Time.time < waitUntil)
+            foreach (EVVWaveDefinition wave in level.Waves)
             {
-                yield return null;
+                float waitUntil = passStartTime + wave.Time;
+                while (Time.time < waitUntil)
+                {
+                    yield return null;
+                }
+
+                if (wave.Type == EVVWaveType.Flag)
+                {
+                    ShowBanner(flagWaveMessage);
+                }
+                else if (wave.Type == EVVWaveType.Final)
+                {
+                    ShowBanner(finalWaveMessage);
+                }
+
+                yield return StartCoroutine(RunWave(wave));
             }
 
-            if (wave.Type == EVVWaveType.Flag)
-            {
-                ShowBanner(flagWaveMessage);
-            }
-            else if (wave.Type == EVVWaveType.Final)
-            {
-                ShowBanner(finalWaveMessage);
-            }
-
-            yield return StartCoroutine(RunWave(wave));
+            // At least a frame per pass, so a wave list with no waits cannot lock the game up.
+            yield return null;
+            passStartTime = Time.time;
+            CleanupAliveList();
         }
+        while (level.Endless && level.Waves.Count > 0);
 
         yield return StartCoroutine(WaitForBoardClear());
 
