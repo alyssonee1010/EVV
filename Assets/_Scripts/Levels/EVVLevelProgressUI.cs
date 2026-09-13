@@ -69,6 +69,13 @@ public class EVVLevelProgressUI : MonoBehaviour
 
     void OnLevelStarted(EVVLevelDefinition level)
     {
+        // An endless level has no last wave to fill towards.
+        if (level.Endless)
+        {
+            SetVisible(false);
+            return;
+        }
+
         BuildBar(level);
         SetVisible(true);
     }

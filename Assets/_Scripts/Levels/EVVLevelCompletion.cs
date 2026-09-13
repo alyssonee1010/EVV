@@ -47,25 +47,36 @@ public static class EVVLevelCompletion
         return completedLevelIds;
     }
 
+    // Stage 0 is the developer stage: its levels are always listed and never gate the real
+    // progression, so a test level can sit first without hiding the game's first level.
+    public const int DeveloperStage = 0;
+
     // Levels are supplied in progression order. The first level is always available, then each
     // following level is revealed only after the immediately previous one has been completed.
     public static List<EVVLevelDefinition> GetAvailableLevels(IReadOnlyList<EVVLevelDefinition> levels)
     {
         List<EVVLevelDefinition> availableLevels = new List<EVVLevelDefinition>();
-        if (levels == null || levels.Count == 0)
+        if (levels == null)
         {
             return availableLevels;
         }
 
-        availableLevels.Add(levels[0]);
-        for (int i = 1; i < levels.Count; i++)
+        EVVLevelDefinition previousProgressionLevel = null;
+        foreach (EVVLevelDefinition level in levels)
         {
-            if (!IsCompleted(levels[i - 1].Id))
+            if (level.Stage == DeveloperStage)
+            {
+                availableLevels.Add(level);
+                continue;
+            }
+
+            if (previousProgressionLevel != null && !IsCompleted(previousProgressionLevel.Id))
             {
                 break;
             }
 
-            availableLevels.Add(levels[i]);
+            availableLevels.Add(level);
+            previousProgressionLevel = level;
         }
 
         return availableLevels;

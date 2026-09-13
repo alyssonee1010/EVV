@@ -8,6 +8,8 @@ Use NN-NN.yml or NN-NN_name.yml. Other YAML filenames are ignored.
 
 Levels are displayed in stage/level order using their stage and level fields.
 
+Stage 0 is the developer stage: its levels are always available and never gate the real progression.
+
 ## Top-Level Fields
 
 | Field | Purpose |
@@ -19,6 +21,7 @@ Levels are displayed in stage/level order using their stage and level fields.
 | settings.rows | Playable board rows/lane count |
 | settings.columns | Playable board columns |
 | settings.starting_currency | Diamond wallet value applied when the level starts |
+| settings.endless | true repeats the wave list forever after its last wave ends; the level never completes (test levels) |
 | available_units | Parsed unit-id list; currently not enforced |
 | waves | Ordered wave definitions |
 | unlocks | Defender ids unlocked after completion |

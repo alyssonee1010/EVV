@@ -598,6 +598,24 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ac8180567df1155439de8582b182f0d9, type: 3}
   - {fileID: 8300000, guid: 09d1af0e133d8f94aad19e50c1e3ade9, type: 3}
   pitchRange: {x: 0.95, y: 1.05}
+  crowdControl:
+    enabled: 1
+    maxImpacts: 10
+    impactCooldown: 0.04
+    voiceType: Normal
+    maxVoices: 10
+    maxVoicesPerType: 4
+    voiceCooldown: 0.12
+    attackChance: 1
+    effortChance: 0.3
+    hitChance: 0.2
+    afterKillChance: 1
+    attackVolume: 1
+    effortVolume: 0.55
+    hitVolume: 0.55
+    afterKillVolume: 0.7
+    stereoPanAmount: 0.35
+    stereoPanWorldHalfWidth: 10
   collectPitchStart: 1
   collectPitchMax: 2.5
   collectPitchStep: 0.1

@@ -71,6 +71,10 @@ public class EVVLevelDefinition
     public int BoardRows = 6;
     public int BoardColumns = 10;
     public int StartingCurrency = 100;
+
+    // Endless: the wave list starts over each time its last wave ends, and the level never
+    // completes. Meant for developer/test levels.
+    public bool Endless = false;
     public List<string> AvailableUnits = new List<string>();
     public List<string> Unlocks = new List<string>();
     public List<EVVWaveDefinition> Waves = new List<EVVWaveDefinition>();
