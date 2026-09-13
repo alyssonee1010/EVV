@@ -1,7 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class TransformExtensions
 {
+    public static List<Transform> GetChildren(this Transform transform)
+    {
+        List<Transform> items = new();
+        foreach (Transform t in transform)
+        {
+            items.Add(t);
+        }
+        return items;
+    } 
+
     public static void DestroyChildren(this Transform transform)
     {
         // Loop backward to safely avoid index shifting bugs

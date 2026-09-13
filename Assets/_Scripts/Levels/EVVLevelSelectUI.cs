@@ -238,7 +238,7 @@ public class EVVLevelSelectUI : MonoBehaviour
             List<EVVLevelDefinition> allLevels = EVVLevelLoader.DiscoverLevels();
             if (allLevels.Count == 0)
             {
-                Debug.LogWarning("No level files found in Assets/Levels.");
+                Debug.LogWarning("No level files found in Assets/StreamingAssets/Levels.");
             }
 
             levels = EVVLevelCompletion.GetAvailableLevels(allLevels);

@@ -14,7 +14,7 @@
 
 ### EVVLevelLoader
 
-Discovers and parses Assets/Levels/*.yml into EVVLevelDefinition objects. Discovery order is stage then level.
+Discovers and parses Assets/StreamingAssets/Levels/*.yml into VVELevelDefinition objects. Discovery order is stage then level.
 
 ### EVVMainMenuController
 
