@@ -5983,6 +5983,11 @@ MonoBehaviour:
     prefab: {fileID: 2621850774706791911, guid: 20124f55040841e498f35154bd73223d, type: 3}
     cost: 10
     unlockedByDefault: 0
+  - id: trap_digger
+    displayName: Trap Digger
+    prefab: {fileID: 8352693179857865106, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
+    cost: 8
+    unlockedByDefault: 0
 --- !u!114 &1041379302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12794,83 +12799,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b46fa554cd3b3e145bd91f622744d626, type: 3}
---- !u!1001 &8868574573871078263
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 198225837263358298, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_Name
-      value: TrapDigger
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -3.76
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2313494585241400902, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3207353750724671319, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_Name
-      value: hole
-      objectReference: {fileID: 0}
-    - target: {fileID: 4773441166860643300, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4773441166860643300, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8703347079403799234, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 8703347079403799234, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.04
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 24e9a8f52efa00842a9c0eabfa4c63d0, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -12887,4 +12815,3 @@ SceneRoots:
   - {fileID: 7359418243305269427}
   - {fileID: 5462458228371618610}
   - {fileID: 566298145}
-  - {fileID: 8868574573871078263}

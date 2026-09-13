@@ -1,5 +1,5 @@
-using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class EVVDisableChildObjectsComponents : MonoBehaviour
 {
@@ -10,6 +10,8 @@ public class EVVDisableChildObjectsComponents : MonoBehaviour
             var components = child.GetComponentsInChildren<Behaviour>();
             foreach (var component in components)
             {
+                if (component is SortingGroup)
+                    continue;
                 component.enabled = false;
             }
         }

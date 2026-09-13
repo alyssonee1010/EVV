@@ -9,6 +9,7 @@ public class EEVTrapDigger : MonoBehaviour
     [SerializeField] Transform leaveHoleLandingPos;
     [SerializeField] UnityEvent onHoleDug;
     [SerializeField] UnityEvent onHoleLeft;
+    [SerializeField] float walkSpeed = 1f;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,6 +19,7 @@ public class EEVTrapDigger : MonoBehaviour
             onHoleDug.Invoke();
             LeaveHole().OnComplete(() => {
                 onHoleLeft.Invoke();
+                WalkLeftOffScreen();
             });
         });
     }
@@ -31,5 +33,14 @@ public class EEVTrapDigger : MonoBehaviour
     {
         var maxHeight = Mathf.Max(transform.position.y, leaveHoleLandingPos.position.y) + jumpHeight;
         return EVVTween.TweenArcTo(transform, leaveHoleLandingPos.position, maxHeight);
+    }
+
+    private PrimeTween.Tween WalkLeftOffScreen()
+    {
+        return EVVTween.TweenTo(transform, transform.position - new Vector3(20*walkSpeed,0,0), 20);
+    }
+
+    void OnBecameInvisible() {
+        Destroy(gameObject);
     }
 }
