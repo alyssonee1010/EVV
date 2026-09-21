@@ -16,10 +16,16 @@ public class EEVTrapDigger : MonoBehaviour
     void Start()
     {
         Sink().OnComplete(() => {
+            if (this == null) return; // killed while digging
             onHoleDug.Invoke();
+            // From here on the hole is the trap: it stops taking hits and swallows the next Vikings.
+            EVVTrapHole hole = GetComponentInParent<EVVTrapHole>();
+            if (hole != null) hole.Arm();
             LeaveHole().OnComplete(() => {
+                if (this == null) return;
                 onHoleLeft.Invoke();
-                WalkLeftOffScreen();
+                // No renderer on this object, so OnBecameInvisible never fires; leave once the walk is over.
+                WalkLeftOffScreen().OnComplete(() => { if (this != null) Destroy(gameObject); });
             });
         });
     }
@@ -42,5 +48,11 @@ public class EEVTrapDigger : MonoBehaviour
 
     void OnBecameInvisible() {
         Destroy(gameObject);
+    }
+
+    // Killed mid-dig: stop the sink/walk tweens on this transform so their OnComplete callbacks are
+    // not reported as lost.
+    void OnDestroy() {
+        PrimeTween.Tween.StopAll(onTarget: transform);
     }
 }

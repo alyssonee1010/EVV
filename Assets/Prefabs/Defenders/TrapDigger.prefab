@@ -2946,6 +2946,7 @@ GameObject:
   - component: {fileID: 2233239111017874913}
   - component: {fileID: 8352693179857865106}
   - component: {fileID: 2425206327896525911}
+  - component: {fileID: 1019029847336103327}
   m_Layer: 0
   m_Name: TrapDigger
   m_TagString: Untagged
@@ -2986,7 +2987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 100
-  destroyWhenDead: 1
+  destroyWhenDead: 0
   onTakeDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -3017,6 +3018,43 @@ SortingGroup:
   m_SortingOrder: 0
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
+--- !u!114 &1019029847336103327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5957723828494886328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc415f81ebdb5684380fe4ae3e447e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVTrapHole
+  holeMask: {fileID: 3255533398205696519}
+  holeSprite: {fileID: 5863468840970289268}
+  cover: {fileID: 7070291441084781131}
+  triggerHalfWidth: 0.35
+  fallDepth: 3.2
+  fallSeconds: 0.55
+  groupWindowSeconds: 0.2
+  maskDepthWhileFalling: 4.5
+  fallTrigger: Fall
+  fallbackFallTrigger: Stun
+  regenerationSeconds: 60
+  jumpStartOffset: 0.8
+  jumpLandOffset: 0.8
+  jumpHeight: 0.7
+  jumpSeconds: 0.5
+  jumpTrigger: Jump
+  onArmed:
+    m_PersistentCalls:
+      m_Calls: []
+  onSprung:
+    m_PersistentCalls:
+      m_Calls: []
+  onRegenerationStarted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6321195109402164231
 GameObject:
   m_ObjectHideFlags: 0
