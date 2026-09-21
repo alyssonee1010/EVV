@@ -1,8 +1,8 @@
-id: 01-05
+id: 01-08
 name: "Last Stand"
 
 stage: 1
-level: 5
+level: 8
 
 # General level settings
 settings:
@@ -99,6 +99,6 @@ waves:
         time_offset: 20
         duration: 20
 
-# Defenders unlocked after clearing this level
+# The fire-shooting Wizard joins after the stage finale.
 unlocks:
-  - girl
+  - wizard

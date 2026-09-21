@@ -1,8 +1,8 @@
-id: 01-04
+id: 01-07
 name: "Reinforcements"
 
 stage: 1
-level: 4
+level: 7
 
 # General level settings
 settings:
@@ -98,6 +98,6 @@ waves:
         time_offset: 5
         duration: 10
 
-# Defenders unlocked after clearing this level
+# Speed Potion Maker joins after this late-stage level.
 unlocks:
-  - potion_maker
+  - speed_potion_maker
