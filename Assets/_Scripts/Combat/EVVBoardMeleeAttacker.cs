@@ -125,9 +125,10 @@ public class EVVBoardMeleeAttacker : MonoBehaviour
         return target != null;
     }
 
+    // A Viking in the middle of his jump is out of reach of a swing (he is still a target for arrows).
     bool IsValidTarget(IEVVEnemyLaneWalker enemy)
     {
-        return EVVTargetRegistry.IsEnemy(enemy) && TryGetEnemyObject(enemy, out _) && enemy.Health != null && enemy.Health.IsAlive;
+        return EVVTargetRegistry.IsEnemy(enemy) && TryGetEnemyObject(enemy, out _) && enemy.Health != null && enemy.Health.IsAlive && !enemy.IsDodgingMelee;
     }
 
     bool IsInRange(IEVVEnemyLaneWalker enemy)

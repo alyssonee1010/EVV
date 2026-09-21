@@ -518,7 +518,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8653719598885068355, guid: 95e62effe308e3643b12f8a7a6846bae, type: 3}
       propertyPath: m_Name
-      value: Naked_viking
+      value: Rap_viking
       objectReference: {fileID: 0}
     - target: {fileID: -8353885664523026186, guid: 95e62effe308e3643b12f8a7a6846bae, type: 3}
       propertyPath: m_Name
@@ -1083,6 +1083,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EVVEnemyVikingWalker
   moveSpeed: 1.2
   reachDistance: 0.1
+  laneHeightOffset: 0.2
   attackStartDistance: 0.8
   depthTolerance: 0.45
   overlapTolerance: 0.1
@@ -1093,6 +1094,7 @@ MonoBehaviour:
   fallbackFirstAttackDelay: 0.5
   fallbackAttackInterval: 1.5
   afterKillLockSeconds: 0.17
+  dodgeMaxSeconds: 1.5
   boardDamageOnExit: 1
   carryBoneName: body
   carryOffset: {x: -0.05, y: 1.25, z: 0}
