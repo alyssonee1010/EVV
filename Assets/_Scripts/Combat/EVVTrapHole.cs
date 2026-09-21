@@ -24,8 +24,8 @@ public class EVVTrapHole : MonoBehaviour
     [Header("Falling in")]
     [Tooltip("Half width of the strip over the hole (world units) a Viking's feet have to enter to fall.")]
     [SerializeField, Min(0.01f)] float triggerHalfWidth = 0.35f;
-    [Tooltip("A Viking sinks until his top is this far below the mask's top edge (the rim dips about 0.3 below it in the middle), and the mask is extended this far below his feet.")]
-    [SerializeField, Min(0f)] float hideMargin = 0.6f;
+    [Tooltip("How far a Viking sinks while he shrinks away to nothing. Keep it within the digger's mask (1.6 deep), which hides everything below the rim.")]
+    [SerializeField, Min(0.1f)] float fallDepth = 1f;
     [SerializeField, Min(0.05f)] float fallSeconds = 0.55f;
     [Tooltip("How long the hole stays open after the first Viking falls, so a group falls in together.")]
     [SerializeField, Min(0f)] float groupWindowSeconds = 0.2f;
@@ -46,12 +46,6 @@ public class EVVTrapHole : MonoBehaviour
     float windowRemaining;
     float lastFallEnds;
     float regenerationRemaining;
-    // The mask's top edge (the rim) and how far down the masked area currently reaches; a plain
-    // rectangle mask is hung below the digger's mask when a faller needs more.
-    float rimY;
-    float maskBottom;
-    SpriteMask maskExtension;
-    static Sprite squareSprite;
     Color holeColor;
     readonly List<MonoBehaviour> candidates = new List<MonoBehaviour>();
     readonly Dictionary<MonoBehaviour, float> lastWalkerX = new Dictionary<MonoBehaviour, float>();
@@ -182,9 +176,9 @@ public class EVVTrapHole : MonoBehaviour
     Vector3 HoleCenter => holeSprite != null ? holeSprite.bounds.center : transform.position;
 
     // Out of the fight (the lure he holds gets away first; disabling the walker leaves the target
-    // registry), then down the hole behind the mask, the way the digger went in. He only sinks
-    // until the mask hides all of him and is gone the moment it does, so no part of him ever shows
-    // up lower on the board.
+    // registry), then down the hole behind the mask, the way the digger went in. He shrinks away
+    // to nothing as he sinks, so a shallow mask hides all of him and the mask art is never
+    // stretched; he is destroyed the moment he is gone.
     void Swallow(MonoBehaviour walker)
     {
         if (state == State.Armed)
@@ -217,13 +211,6 @@ public class EVVTrapHole : MonoBehaviour
         }
 
         Transform body = walker.transform;
-        float sink = 2.5f;
-        if (TryGetSpriteBounds(walker.gameObject, out Bounds bodyBounds))
-        {
-            sink = Mathf.Max(0.5f, bodyBounds.max.y - rimY + hideMargin);
-            EnsureMaskReaches(bodyBounds.min.y - sink);
-        }
-
         MaskForFalling(walker.gameObject);
         Animator animator = walker.GetComponent<Animator>();
         if (animator != null)
@@ -231,9 +218,10 @@ public class EVVTrapHole : MonoBehaviour
             TrySetTrigger(animator, fallTrigger);
         }
 
-        Vector3 bottom = new Vector3(HoleCenter.x, body.position.y - sink, body.position.z);
+        Vector3 bottom = new Vector3(HoleCenter.x, body.position.y - fallDepth, body.position.z);
         GameObject victim = walker.gameObject;
         lastFallEnds = Mathf.Max(lastFallEnds, Time.time + fallSeconds);
+        Tween.Scale(body, Vector3.zero, fallSeconds, Ease.InQuad);
         EVVTween.TweenTo(body, bottom, fallSeconds, Ease.InQuad).OnComplete(() =>
         {
             if (victim != null)
@@ -258,8 +246,6 @@ public class EVVTrapHole : MonoBehaviour
     // but a falling Viking, the dropping cover and a digger still down a hole is ever set that way.
     void FreeMask()
     {
-        rimY = transform.position.y;
-        maskBottom = rimY;
         if (holeMask == null)
         {
             return;
@@ -267,53 +253,6 @@ public class EVVTrapHole : MonoBehaviour
 
         holeMask.transform.SetParent(null, true);
         holeMask.isCustomRangeActive = false;
-        Bounds maskBounds = holeMask.bounds;
-        rimY = maskBounds.max.y;
-        maskBottom = maskBounds.min.y;
-    }
-
-    // Extends the masked area down to below the given height with a plain rectangle under the
-    // digger's mask, whose rim shape is left as it is.
-    void EnsureMaskReaches(float bottomY)
-    {
-        float wanted = bottomY - hideMargin;
-        if (holeMask == null || wanted >= maskBottom)
-        {
-            return;
-        }
-
-        Bounds maskBounds = holeMask.bounds;
-        if (maskExtension == null)
-        {
-            GameObject extension = new GameObject(holeMask.name + " extension");
-            extension.transform.SetParent(holeMask.transform, false);
-            maskExtension = extension.AddComponent<SpriteMask>();
-            maskExtension.sprite = SquareSprite;
-            maskExtension.isCustomRangeActive = false;
-        }
-
-        // Overlaps the mask's bottom edge a little so no seam shows between the two.
-        float top = maskBounds.min.y + 0.05f;
-        Transform extensionTransform = maskExtension.transform;
-        Vector3 parentScale = holeMask.transform.lossyScale;
-        extensionTransform.position = new Vector3(maskBounds.center.x, (top + wanted) * 0.5f, holeMask.transform.position.z);
-        extensionTransform.localScale = new Vector3(maskBounds.size.x / parentScale.x, (top - wanted) / parentScale.y, 1f);
-        maskBottom = wanted;
-    }
-
-    // A 1 x 1 unit solid square for the extension mask.
-    static Sprite SquareSprite
-    {
-        get
-        {
-            if (squareSprite == null)
-            {
-                Texture2D texture = Texture2D.whiteTexture;
-                squareSprite = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), texture.width);
-            }
-
-            return squareSprite;
-        }
     }
 
     // The leaves and sticks sink out of sight below the rim. Pieces still to come down (the digger
@@ -330,19 +269,12 @@ public class EVVTrapHole : MonoBehaviour
             scatter.StopAllCoroutines();
         }
 
-        float drop = 0.5f;
-        if (TryGetSpriteBounds(cover, out Bounds coverBounds))
-        {
-            drop = Mathf.Max(drop, coverBounds.max.y - rimY + hideMargin);
-            EnsureMaskReaches(coverBounds.min.y - drop);
-        }
-
         MaskForFalling(cover);
         foreach (SpriteRenderer piece in cover.GetComponentsInChildren<SpriteRenderer>())
         {
             Transform pieceTransform = piece.transform;
             Tween.StopAll(onTarget: pieceTransform);
-            EVVTween.TweenTo(pieceTransform, pieceTransform.position + Vector3.down * drop, fallSeconds, Ease.InQuad);
+            EVVTween.TweenTo(pieceTransform, pieceTransform.position + Vector3.down * fallDepth, fallSeconds, Ease.InQuad);
         }
 
         GameObject coverObject = cover;
@@ -361,32 +293,6 @@ public class EVVTrapHole : MonoBehaviour
         {
             renderer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
         }
-    }
-
-    // World bounds of the object's visible sprites.
-    static bool TryGetSpriteBounds(GameObject target, out Bounds bounds)
-    {
-        bounds = default;
-        bool found = false;
-        foreach (SpriteRenderer renderer in target.GetComponentsInChildren<SpriteRenderer>())
-        {
-            if (!renderer.enabled || renderer.sprite == null)
-            {
-                continue;
-            }
-
-            if (found)
-            {
-                bounds.Encapsulate(renderer.bounds);
-            }
-            else
-            {
-                bounds = renderer.bounds;
-                found = true;
-            }
-        }
-
-        return found;
     }
 
     // Nothing sinks any more: a mask set free is done with.
