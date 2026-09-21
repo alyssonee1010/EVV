@@ -150,29 +150,30 @@ public class EVVTrapHole : MonoBehaviour
 
     // ---------------------------------------------------------------- falling in
 
+    // Anyone stepping onto the cover goes in, a Viking carrying the lure back out just the same.
     void ScanForFallers()
     {
-        float holeX = HoleCenter.x;
         candidates.Clear();
-        IReadOnlyList<IEVVEnemyLaneWalker> enemies = EVVTargetRegistry.Enemies;
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            IEVVEnemyLaneWalker walker = enemies[i];
-            if (!IsWalkingHere(walker, out MonoBehaviour behaviour))
-            {
-                continue;
-            }
-
-            if (Mathf.Abs(behaviour.transform.position.x - holeX) <= triggerHalfWidth)
-            {
-                candidates.Add(behaviour);
-            }
-        }
+        CollectFallers(EVVTargetRegistry.Enemies);
+        CollectFallers(EVVTargetRegistry.CharmedEnemies);
 
         // Swallowing disables the walker, which drops it from the list being scanned.
         for (int i = 0; i < candidates.Count; i++)
         {
             Swallow(candidates[i]);
+        }
+    }
+
+    void CollectFallers(IReadOnlyList<IEVVEnemyLaneWalker> walkers)
+    {
+        float holeX = HoleCenter.x;
+        for (int i = 0; i < walkers.Count; i++)
+        {
+            if (IsWalkingHere(walkers[i], out MonoBehaviour behaviour)
+                && Mathf.Abs(behaviour.transform.position.x - holeX) <= triggerHalfWidth)
+            {
+                candidates.Add(behaviour);
+            }
         }
     }
 
@@ -195,9 +196,10 @@ public class EVVTrapHole : MonoBehaviour
 
     Vector3 HoleCenter => holeSprite != null ? holeSprite.bounds.center : transform.position;
 
-    // Out of the fight (disabling the walker leaves the target registry), then down the hole
-    // behind the mask, the way the digger went in. He only sinks until the mask hides all of him
-    // and is gone the moment it does, so no part of him ever shows up lower on the board.
+    // Out of the fight (the lure he holds gets away first; disabling the walker leaves the target
+    // registry), then down the hole behind the mask, the way the digger went in. He only sinks
+    // until the mask hides all of him and is gone the moment it does, so no part of him ever shows
+    // up lower on the board.
     void Swallow(MonoBehaviour walker)
     {
         if (state == State.Armed)
@@ -205,6 +207,7 @@ public class EVVTrapHole : MonoBehaviour
             Spring();
         }
 
+        ((IEVVEnemyLaneWalker)walker).LetGo();
         walker.enabled = false;
         foreach (Collider2D collider in walker.GetComponentsInChildren<Collider2D>())
         {

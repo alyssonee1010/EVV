@@ -275,9 +275,15 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
             && (attackTargetDefender == null || (attackTargetDefender.isActiveAndEnabled && attackTargetDefender.IsTargetable));
     }
 
-    // The carrier's death is the lure's cue to run: it happens before the Viking is destroyed,
-    // so the lure can leave his hierarchy in time.
     void OnDied(EVVHealth deadHealth)
+    {
+        LetGo();
+    }
+
+    // Out of the fight for good, dead or fallen into a hole: the lure he carries runs off, the one
+    // he is after is released to the others. Happens before the Viking is destroyed, so the lure can
+    // leave his hierarchy in time.
+    public void LetGo()
     {
         if (hasCharmTarget && charmTarget != null)
         {
