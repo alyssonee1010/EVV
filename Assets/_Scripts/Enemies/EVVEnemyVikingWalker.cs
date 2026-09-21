@@ -60,6 +60,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     float fallbackAttackTimer;
     float afterKillTimer;
     float dodgeTimer;
+    float pauseTimer;
     EVVCharmLure charmTarget;
     EVVCharmLure carriedLure;
     EVVCharmLure resistedLure;
@@ -75,6 +76,12 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     public int LaneIndex { get; private set; }
     public EVVHealth Health => health;
     public bool IsDodgingMelee => dodgeTimer > 0f;
+
+    // Held still by something outside, like a jump over a hole that moves him itself.
+    public void PauseWalk(float seconds)
+    {
+        pauseTimer = Mathf.Max(pauseTimer, seconds);
+    }
 
     public float MoveSpeed
     {
@@ -136,6 +143,12 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
         if (!hasTarget || health == null || !health.IsAlive)
         {
+            return;
+        }
+
+        if (pauseTimer > 0f)
+        {
+            pauseTimer -= Time.deltaTime;
             return;
         }
 

@@ -3,13 +3,13 @@ using PrimeTween;
 using UnityEngine;
 using UnityEngine.Events;
 
-// The Trap Digger's hole. While he digs, the tile is an ordinary defender the Vikings attack. Once
-// the hole is dug (EEVTrapDigger.Arm) it is covered and nobody attacks it: the next Viking to walk
-// onto it falls in, plus any arriving within the group window, sinking behind the same sprite mask
-// the digger sank behind. From then on the hole is open and fills itself back up: for the
-// regeneration time the cell stays taken, and the Vikings see the open hole and jump over it. The
-// digger dying mid-dig leaves an open hole that regenerates the same way. Regenerated, the trap is
-// gone and the cell is free again.
+// The Trap Digger's hole. While he digs and then lays the cover, the tile is an ordinary defender
+// the Vikings attack. Once the cover is down (EEVTrapDigger arms the hole) nobody attacks it: the
+// next Viking to walk onto it falls in, plus any arriving within the group window, sinking behind
+// the same sprite mask the digger sank behind. From then on the hole is open and fills itself back
+// up: for the regeneration time the cell stays taken, and the Vikings see the open hole and jump
+// over it, coming or going. The digger dying before the cover is done leaves an open hole that
+// regenerates the same way. Regenerated, the trap is gone and the cell is free again.
 [RequireComponent(typeof(EVVDefender))]
 [RequireComponent(typeof(EVVHealth))]
 public class EVVTrapHole : MonoBehaviour
@@ -91,7 +91,27 @@ public class EVVTrapHole : MonoBehaviour
         health.Died -= OnDied;
     }
 
-    // The hole is finished: nobody attacks it any more, the next Viking falls in.
+    // The digger is out of the hole: the leaves and sticks come down over it. Returns how long
+    // that takes; the digger arms the hole after the wait, so until every piece has landed it is
+    // still an ordinary, attackable defender and dies like one.
+    public float PlaceCover()
+    {
+        if (state != State.Digging || cover == null)
+        {
+            return 0f;
+        }
+
+        cover.SetActive(true);
+        float seconds = 0f;
+        foreach (EEVScatterInTween scatter in cover.GetComponentsInChildren<EEVScatterInTween>(true))
+        {
+            seconds = Mathf.Max(seconds, scatter.TotalSeconds);
+        }
+
+        return seconds;
+    }
+
+    // The hole is finished and covered: nobody attacks it any more, the next Viking falls in.
     public void Arm()
     {
         if (state != State.Digging)
@@ -156,7 +176,7 @@ public class EVVTrapHole : MonoBehaviour
         }
     }
 
-    // A live, enabled walker in this lane (a disabled one is already falling or jumping).
+    // A live, enabled walker in this lane (a disabled one is already falling in).
     bool IsWalkingHere(IEVVEnemyLaneWalker walker, out MonoBehaviour behaviour)
     {
         behaviour = walker as MonoBehaviour;
@@ -309,12 +329,18 @@ public class EVVTrapHole : MonoBehaviour
         }
     }
 
-    // The leaves and sticks sink out of sight below the rim.
+    // The leaves and sticks sink out of sight below the rim. Pieces still to come down (the digger
+    // died while laying them) stay away.
     void DropCover()
     {
         if (cover == null || !cover.activeInHierarchy)
         {
             return;
+        }
+
+        foreach (EEVScatterInTween scatter in cover.GetComponentsInChildren<EEVScatterInTween>())
+        {
+            scatter.StopAllCoroutines();
         }
 
         float drop = 0.5f;
@@ -328,6 +354,7 @@ public class EVVTrapHole : MonoBehaviour
         foreach (SpriteRenderer piece in cover.GetComponentsInChildren<SpriteRenderer>())
         {
             Transform pieceTransform = piece.transform;
+            Tween.StopAll(onTarget: pieceTransform);
             EVVTween.TweenTo(pieceTransform, pieceTransform.position + Vector3.down * drop, fallSeconds, Ease.InQuad);
         }
 
@@ -386,9 +413,10 @@ public class EVVTrapHole : MonoBehaviour
 
     // ---------------------------------------------------------------- the open hole
 
-    // The digger died in the hole: the hole stays and fills itself back up like a sprung one. It keeps
-    // one hit point so the board still counts the cell as taken (a dead defender frees its cell).
-    // Any later death is the player's remove tool.
+    // The digger died before the trap was ready: the hole stays and fills itself back up like a
+    // sprung one, a half-laid cover falling in first. It keeps one hit point so the board still
+    // counts the cell as taken (a dead defender frees its cell). Any later death is the player's
+    // remove tool.
     void OnDied(EVVHealth deadHealth)
     {
         if (state == State.Digging)
@@ -399,6 +427,16 @@ public class EVVTrapHole : MonoBehaviour
             if (digger != null)
             {
                 Destroy(digger.gameObject);
+            }
+
+            if (cover != null && cover.activeInHierarchy)
+            {
+                state = State.Sprung;
+                windowRemaining = 0f;
+                lastFallEnds = Time.time + fallSeconds;
+                FreeMask();
+                DropCover();
+                return;
             }
 
             StartRegeneration();
@@ -464,30 +502,14 @@ public class EVVTrapHole : MonoBehaviour
         return false;
     }
 
-    // A Viking that walks up to the open hole jumps it. Only walkers crossing the take-off line
-    // from the far side count, so one standing near it fighting something is left alone.
+    // A Viking that walks up to the open hole jumps it, coming in or going back out with the lure.
+    // Only walkers crossing a take-off line towards the hole count, so one standing near it
+    // fighting something is left alone.
     void ScanForJumpers()
     {
-        float takeOffX = HoleCenter.x + jumpStartOffset;
         candidates.Clear();
-        IReadOnlyList<IEVVEnemyLaneWalker> enemies = EVVTargetRegistry.Enemies;
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            IEVVEnemyLaneWalker walker = enemies[i];
-            if (!IsWalkingHere(walker, out MonoBehaviour behaviour))
-            {
-                continue;
-            }
-
-            float x = behaviour.transform.position.x;
-            if (lastWalkerX.TryGetValue(behaviour, out float previousX) && previousX > takeOffX && x <= takeOffX && x < previousX)
-            {
-                candidates.Add(behaviour);
-            }
-
-            lastWalkerX[behaviour] = x;
-        }
-
+        CollectJumpers(EVVTargetRegistry.Enemies);
+        CollectJumpers(EVVTargetRegistry.CharmedEnemies);
         for (int i = 0; i < candidates.Count; i++)
         {
             Jump(candidates[i]);
@@ -508,12 +530,35 @@ public class EVVTrapHole : MonoBehaviour
         }
     }
 
-    // The walker is paused for the arc (it would drag the Viking back onto its lane line every
-    // frame) and resumes its walk on landing.
+    void CollectJumpers(IReadOnlyList<IEVVEnemyLaneWalker> walkers)
+    {
+        float holeX = HoleCenter.x;
+        float rightLine = holeX + jumpStartOffset;
+        float leftLine = holeX - jumpStartOffset;
+        for (int i = 0; i < walkers.Count; i++)
+        {
+            if (!IsWalkingHere(walkers[i], out MonoBehaviour behaviour))
+            {
+                continue;
+            }
+
+            float x = behaviour.transform.position.x;
+            if (lastWalkerX.TryGetValue(behaviour, out float previousX)
+                && ((previousX > rightLine && x <= rightLine) || (previousX < leftLine && x >= leftLine)))
+            {
+                candidates.Add(behaviour);
+            }
+
+            lastWalkerX[behaviour] = x;
+        }
+    }
+
+    // The walker is held still for the arc (it would drag the Viking back onto its lane line every
+    // frame) and walks on from where he lands, on whichever side he was heading for.
     void Jump(MonoBehaviour walker)
     {
-        walker.enabled = false;
         lastWalkerX.Remove(walker);
+        ((IEVVEnemyLaneWalker)walker).PauseWalk(jumpSeconds);
         Animator animator = walker.GetComponent<Animator>();
         if (animator != null)
         {
@@ -521,14 +566,9 @@ public class EVVTrapHole : MonoBehaviour
         }
 
         Transform body = walker.transform;
-        Vector3 landing = new Vector3(HoleCenter.x - jumpLandOffset, body.position.y, body.position.z);
-        EVVTween.TweenArcTo(body, landing, body.position.y + jumpHeight, jumpSeconds).OnComplete(() =>
-        {
-            if (walker != null)
-            {
-                walker.enabled = true;
-            }
-        });
+        float side = body.position.x < HoleCenter.x ? 1f : -1f;
+        Vector3 landing = new Vector3(HoleCenter.x + side * jumpLandOffset, body.position.y, body.position.z);
+        EVVTween.TweenArcTo(body, landing, body.position.y + jumpHeight, jumpSeconds);
     }
 
     // ---------------------------------------------------------------- gone
