@@ -15,6 +15,8 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     [Header("Movement")]
     [SerializeField] float moveSpeed = 0.75f;
     [SerializeField] float reachDistance = 0.05f;
+    [Tooltip("Raises this Viking above the lane line, for a rig whose feet sit lower than the others'.")]
+    [SerializeField] float laneHeightOffset = 0f;
 
     [Header("Targeting")]
     [SerializeField] float attackStartDistance = 0.8f;
@@ -32,6 +34,8 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
     [Header("Animation")]
     [SerializeField, Min(0f)] float afterKillLockSeconds = 0.8f;
+    [Tooltip("Longest a BeginDodge animation event keeps melee off him, in case the clip is cut before EndDodge.")]
+    [SerializeField, Min(0f)] float dodgeMaxSeconds = 0.8f;
 
     [Header("Board Damage")]
     [SerializeField, Min(1)] int boardDamageOnExit = 1;
@@ -52,10 +56,10 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     EVVDefender attackTargetDefender;
     bool hasTarget;
     bool hasAttackTarget;
-    int lastHealth;
     float walkDirection = -1f;
     float fallbackAttackTimer;
     float afterKillTimer;
+    float dodgeTimer;
     EVVCharmLure charmTarget;
     EVVCharmLure carriedLure;
     EVVCharmLure resistedLure;
@@ -70,6 +74,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
     public int LaneIndex { get; private set; }
     public EVVHealth Health => health;
+    public bool IsDodgingMelee => dodgeTimer > 0f;
 
     public float MoveSpeed
     {
@@ -97,9 +102,12 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
         if (health != null)
         {
-            lastHealth = health.CurrentHealth;
-            health.HealthChanged += OnHealthChanged;
             health.Died += OnDied;
+        }
+
+        if (stunProfile != null)
+        {
+            stunProfile.Stunned += OnStunned;
         }
 
         EVVTargetRegistry.Add(this);
@@ -110,13 +118,22 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         EVVTargetRegistry.Remove(this);
         if (health != null)
         {
-            health.HealthChanged -= OnHealthChanged;
             health.Died -= OnDied;
+        }
+
+        if (stunProfile != null)
+        {
+            stunProfile.Stunned -= OnStunned;
         }
     }
 
     void Update()
     {
+        if (dodgeTimer > 0f)
+        {
+            dodgeTimer -= Time.deltaTime;
+        }
+
         if (!hasTarget || health == null || !health.IsAlive)
         {
             return;
@@ -183,6 +200,8 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     public void BeginLaneWalk(int laneIndex, Vector3 startPosition, Vector3 endPosition, float speed, int maxHealth)
     {
         LaneIndex = laneIndex;
+        startPosition.y += laneHeightOffset;
+        endPosition.y += laneHeightOffset;
         startPosition = EVVLaneDepth.WithLaneZ(startPosition, laneIndex);
         endPosition = EVVLaneDepth.WithLaneZ(endPosition, laneIndex);
         transform.position = startPosition;
@@ -210,35 +229,37 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         }
 
         health.SetMaxHealth(maxHealth);
-        lastHealth = health.CurrentHealth;
         ApplyLaneDepth(laneIndex);
     }
 
-    void OnHealthChanged(EVVHealth changedHealth, int currentHealth)
+    // Being hit does not interrupt an attack; a stun does. The Stun animation is already playing
+    // (AnyState -> stun -> walk), so the attack is only forgotten here and the next Update finds the
+    // target again and fires Attack, which the animator picks up once the stun is over.
+    void OnStunned()
     {
-        bool tookDamage = currentHealth < lastHealth;
-        lastHealth = currentHealth;
-
-        if (!tookDamage || currentHealth <= 0 || !hasAttackTarget)
-        {
-            return;
-        }
-
-        if (!IsAttackTargetValid())
+        if (!hasAttackTarget || !health.IsAlive)
         {
             return;
         }
 
         hasAttackTarget = false;
         attackTarget = null;
-        ResumeWalking();
+        attackTargetDefender = null;
+        fallbackAttackTimer = 0f;
+        afterKillTimer = 0f;
+        if (animator != null)
+        {
+            animator.ResetTrigger(AttackTriggerName);
+        }
     }
 
+    // A defender that stops being targetable mid-fight (a trap hole that just got finished) is
+    // dropped like a dead one: the Viking walks on.
     bool IsAttackTargetValid()
     {
         return attackTarget != null
             && attackTarget.IsAlive
-            && (attackTargetDefender == null || attackTargetDefender.isActiveAndEnabled);
+            && (attackTargetDefender == null || (attackTargetDefender.isActiveAndEnabled && attackTargetDefender.IsTargetable));
     }
 
     // The carrier's death is the lure's cue to run: it happens before the Viking is destroyed,
@@ -275,7 +296,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
         for (int i = 0; i < characters.Count; i++)
         {
             EVVDefender character = characters[i];
-            if (character == null || !character.isActiveAndEnabled)
+            if (character == null || !character.isActiveAndEnabled || !character.IsTargetable)
             {
                 continue;
             }
@@ -366,6 +387,12 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
             return;
         }
 
+        // A rival in the middle of his jump: the swing misses, the fight goes on.
+        if (attackTargetDefender == null && attackTarget.GetComponent<IEVVEnemyLaneWalker>() is IEVVEnemyLaneWalker rival && rival.IsDodgingMelee)
+        {
+            return;
+        }
+
         int scaledDamage = Mathf.RoundToInt(attackDamage * damageMultiplier);
         attackTarget.TakeDamage(scaledDamage, attackRecoilMultiplier);
         if (attackTarget.IsAlive && stunProfile != null)
@@ -382,6 +409,18 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     public void DealAttackDamageAnimationEvent()
     {
         DealAttackDamage();
+    }
+
+    // Animation events on a clip where the Viking leaves the ground (the Rap Viking's jump kick):
+    // between them melee attackers cannot reach him; projectiles are unaffected.
+    public void BeginDodgeAnimationEvent()
+    {
+        dodgeTimer = dodgeMaxSeconds;
+    }
+
+    public void EndDodgeAnimationEvent()
+    {
+        dodgeTimer = 0f;
     }
 
     public void DealFirstAttackDamageAnimationEvent()

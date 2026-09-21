@@ -30,6 +30,10 @@ public class EVVHitRecoil : MonoBehaviour
     [Header("Audio")]
     [SerializeField] EVVAnimationSoundPlayer soundPlayer;
 
+    // Fired when this character actually gets stunned (the roll succeeded and the Stun animation
+    // plays), as opposed to merely being hit.
+    public event System.Action Stunned;
+
     EVVHealth health;
     Animator animator;
     float recoilTimer;
@@ -157,6 +161,7 @@ public class EVVHitRecoil : MonoBehaviour
 
         animator.ResetTrigger(StunTriggerName);
         animator.SetTrigger(StunTriggerName);
+        Stunned?.Invoke();
         return true;
     }
 
