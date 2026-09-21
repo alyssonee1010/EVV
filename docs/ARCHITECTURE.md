@@ -61,7 +61,7 @@ EVVTilemapBoard exposes the gameplay grid and tilemap. EVVLaneDepth maps lane in
 
 ### EVVDefender
 
-Stores placed-cell state, initializes EVVHealth and EVVWorldHealthBar, and applies lane depth/sorting.
+Stores placed-cell state, initializes EVVHealth and EVVWorldHealthBar, and applies lane depth/sorting. IsTargetable lets a defender stay on the board without being attacked (walkers pass it); depthOffset draws it behind or in front of its lane's Vikings, which otherwise share its z.
 
 ### EVVHealth
 
@@ -77,6 +77,10 @@ Runtime world-space bar that listens to EVVHealth. Defender bars are hidden at f
 - EVVBoardMeleeAttacker performs lane-aware melee targeting.
 - EVVDamageProjectile handles projectile movement and damage.
 - EVVHitRecoil handles hit response and stun presentation.
+
+### EVVTrapHole
+
+The Trap Digger's hole, on the prefab root next to EVVDefender. EEVTrapDigger (the digger's own timeline: sink, jump out, walk off) calls PlaceCover when he is out, which shows the cover and returns its EEVScatterInTween time, and Arm after that wait. Armed, the hole sets the defender non-targetable and swallows Vikings from both registry lists whose feet enter its strip: the walker lets go of the lure (LetGo, shared with his death), is disabled, marked VisibleOutsideMask and sunk behind the digger's own SpriteMask, which is set free at the scene root (a mask inside a SortingGroup only clips that group, and sorting orders are owned by the Vikings' animators) and extended below the faller's feet with a plain square mask, then destroyed once hidden. After the group window the hole regenerates: the cell stays taken (one hit point if the digger died), the hole sprite fades, walkers crossing a take-off line on either side are held with PauseWalk and arced over, and a defender placed on the cell or the timer ending removes it.
 
 ### EVVCharmLure
 

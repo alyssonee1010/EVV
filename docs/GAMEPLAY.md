@@ -19,6 +19,7 @@ Defenders are EVVDefender components backed by EVVHealth. Their behavior comes f
 - EVVMinerMiningReward creates diamond pickups.
 - EVVWizardPotionReward creates potion pickups.
 - EVVCharmLure (the Girl) charms a Viking that reaches it.
+- EVVTrapHole (the Trap Digger) is attackable while the digger digs and lays the leaf cover; once covered nobody attacks it and the next Viking to step on it (plus any arriving within 0.2 s, and a Viking carrying the Girl back, who drops her) falls in and is gone. The open hole then fills itself back up for a minute: the tile stays taken and Vikings jump over it in both directions. A digger killed before the cover is done leaves an open hole that fills up the same way.
 
 EVVWorldHealthBar is created for defenders at runtime. It appears after damage and hides again when health returns to full. Vikings do not receive this defender health bar.
 

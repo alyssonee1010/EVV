@@ -3038,26 +3038,14 @@ MonoBehaviour:
   holeSprite: {fileID: 5863468840970289268}
   cover: {fileID: 7070291441084781131}
   triggerHalfWidth: 0.35
-  hideMargin: 0.35
+  hideMargin: 0.6
   fallSeconds: 0.55
   groupWindowSeconds: 0.2
-  fallTrigger: Fall
-  fallbackFallTrigger: Stun
+  fallTrigger: Stun
   regenerationSeconds: 60
-  jumpStartOffset: 0.8
-  jumpLandOffset: 0.8
+  jumpHalfWidth: 0.8
   jumpHeight: 0.7
   jumpSeconds: 0.5
-  jumpTrigger: Jump
-  onArmed:
-    m_PersistentCalls:
-      m_Calls: []
-  onSprung:
-    m_PersistentCalls:
-      m_Calls: []
-  onRegenerationStarted:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &6321195109402164231
 GameObject:
   m_ObjectHideFlags: 0
