@@ -6,6 +6,8 @@ public class EVVDefender : MonoBehaviour
     [Header("Character Stats")]
     [SerializeField] public int cost = 12;
     [SerializeField] int maxHealth = 100;
+    [Tooltip("Draws this defender behind (positive) or in front of (negative) the Vikings in its lane, which otherwise overlap it in no particular order. Kept small so it stays within the lane's depth tolerance.")]
+    [SerializeField, Range(-0.25f, 0.25f)] float depthOffset;
 
     EVVHealth health;
     EVVWorldHealthBar healthBar;
@@ -62,7 +64,9 @@ public class EVVDefender : MonoBehaviour
 
     public void ApplyLaneDepth(int laneIndex)
     {
-        transform.position = EVVLaneDepth.WithLaneZ(transform.position, laneIndex);
+        Vector3 position = EVVLaneDepth.WithLaneZ(transform.position, laneIndex);
+        position.z += depthOffset;
+        transform.position = position;
         EVVLaneDepth.ApplyGameplaySortingGroup(gameObject);
     }
 }
