@@ -4,32 +4,33 @@ name: "Charm Offensive"
 stage: 1
 level: 6
 
-# The last of the gentler levels: Arrogant Vikings come in small groups with every big wave, but
-# the waves stay shorter than in Reinforcements and Last Stand.
+# General level settings
 settings:
   rows: 6
   columns: 10
   starting_currency: 20
 
+# Units that can appear in this level
 available_units:
   - viking
   - naked_viking
   - arrogant_viking
 
+# Wave schedule (same slow start as the other levels: the player has to earn a board first)
 waves:
   - time_offset: 5
     spawns:
       - unit: viking
         count: 1
-        duration: 0
+        duration: 5
 
-  - time_offset: 10
+  - time_offset: 12
     spawns:
       - unit: viking
         count: 2
         duration: 5
 
-  - time_offset: 12
+  - time_offset: 16
     spawns:
       - unit: viking
         count: 3
@@ -45,20 +46,30 @@ waves:
         count: 5
         duration: 6
 
-  - time_offset: 14
-    tier: flag
+  - time_offset: 12
     spawns:
       - unit: viking
-        count: 6
+        count: 5
         duration: 5
       - unit: arrogant_viking
         count: 2
         time_offset: 2
         duration: 3
+
+  - time_offset: 16
+    tier: flag
+    spawns:
+      - unit: viking
+        count: 6
+        duration: 5
       - unit: naked_viking
         count: 2
         time_offset: 5
         duration: 2
+      - unit: arrogant_viking
+        count: 1
+        time_offset: 3
+        duration: 0
 
   - time_offset: 12
     spawns:
@@ -66,46 +77,42 @@ waves:
         count: 8
         duration: 6
 
-  - time_offset: 12
+  - time_offset: 14
+    spawns:
+      - unit: viking
+        count: 10
+        duration: 6
+      - unit: naked_viking
+        count: 2
+        time_offset: 3
+        duration: 3
+
+  - time_offset: 16
+    tier: flag
     spawns:
       - unit: viking
         count: 10
         duration: 6
       - unit: naked_viking
         count: 3
-        time_offset: 3
-        duration: 3
-      - unit: arrogant_viking
-        count: 2
-        time_offset: 5
-        duration: 2
-
-  - time_offset: 14
-    tier: flag
-    spawns:
-      - unit: viking
-        count: 12
-        duration: 6
-      - unit: naked_viking
-        count: 3
         time_offset: 4
         duration: 3
 
-  - time_offset: 14
+  - time_offset: 20
     spawns:
       - unit: viking
-        count: 12
+        count: 10
         duration: 8
       - unit: arrogant_viking
-        count: 3
+        count: 2
         time_offset: 4
         duration: 4
 
-  - time_offset: 16
+  - time_offset: 26
     tier: final
     spawns:
       - unit: viking
-        count: 16
+        count: 14
         duration: 12
       - unit: naked_viking
         count: 5
@@ -116,6 +123,6 @@ waves:
         time_offset: 8
         duration: 6
 
-# The Girl joins after this level.
+# Defenders unlocked after clearing this level
 unlocks:
   - girl

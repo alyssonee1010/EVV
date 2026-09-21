@@ -4,48 +4,59 @@ name: "Second Wind"
 stage: 1
 level: 5
 
-# Arrogant Vikings start turning up in ones and twos between the regular waves; still well
-# below the pressure of Reinforcements.
+# General level settings
 settings:
   rows: 6
   columns: 10
   starting_currency: 20
 
+# Units that can appear in this level
 available_units:
   - viking
   - naked_viking
   - arrogant_viking
 
+# Wave schedule (same slow start as the other levels: the player has to earn a board first)
 waves:
   - time_offset: 5
     spawns:
       - unit: viking
         count: 1
-        duration: 0
+        duration: 5
 
-  - time_offset: 10
+  - time_offset: 12
     spawns:
       - unit: viking
         count: 2
         duration: 5
 
-  - time_offset: 14
+  - time_offset: 16
     spawns:
       - unit: viking
-        count: 4
-        duration: 6
+        count: 3
+        duration: 5
+      - unit: arrogant_viking
+        count: 1
+        time_offset: 3
+        duration: 0
 
   - time_offset: 12
     spawns:
-      - unit: arrogant_viking
-        count: 1
-        duration: 0
       - unit: viking
-        count: 3
-        time_offset: 3
+        count: 4
         duration: 5
 
-  - time_offset: 14
+  - time_offset: 12
+    spawns:
+      - unit: viking
+        count: 5
+        duration: 5
+      - unit: arrogant_viking
+        count: 1
+        time_offset: 4
+        duration: 0
+
+  - time_offset: 16
     tier: flag
     spawns:
       - unit: viking
@@ -61,22 +72,18 @@ waves:
       - unit: viking
         count: 8
         duration: 6
-      - unit: arrogant_viking
-        count: 1
-        time_offset: 4
-        duration: 0
 
-  - time_offset: 12
+  - time_offset: 14
     spawns:
       - unit: viking
-        count: 10
+        count: 9
         duration: 6
       - unit: naked_viking
-        count: 3
+        count: 2
         time_offset: 3
         duration: 3
 
-  - time_offset: 14
+  - time_offset: 16
     tier: flag
     spawns:
       - unit: viking
@@ -91,20 +98,20 @@ waves:
         time_offset: 5
         duration: 3
 
-  - time_offset: 14
+  - time_offset: 20
     spawns:
       - unit: viking
         count: 12
         duration: 8
 
-  - time_offset: 14
+  - time_offset: 24
     tier: final
     spawns:
       - unit: viking
-        count: 16
+        count: 14
         duration: 12
       - unit: naked_viking
-        count: 5
+        count: 4
         time_offset: 5
         duration: 6
       - unit: arrogant_viking
@@ -112,6 +119,6 @@ waves:
         time_offset: 8
         duration: 4
 
-# Potion Maker (healing potions) joins after this level.
+# Defenders unlocked after clearing this level
 unlocks:
   - potion_maker
