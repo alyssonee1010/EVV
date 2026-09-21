@@ -13,6 +13,9 @@ public class EVVDefender : MonoBehaviour
     public Vector2Int Cell { get; private set; }
     public bool HasCell { get; private set; }
     public EVVHealth Health => health;
+    // A defender the Vikings walk past instead of attacking (a finished trap hole). It keeps its
+    // cell and its registry entry, so the board still counts the tile as taken.
+    public bool IsTargetable { get; private set; } = true;
 
     void Awake()
     {
@@ -45,6 +48,11 @@ public class EVVDefender : MonoBehaviour
         Cell = cell;
         HasCell = true;
         ApplyLaneDepth(cell.y);
+    }
+
+    public void SetTargetable(bool targetable)
+    {
+        IsTargetable = targetable;
     }
 
     public void ApplyRowSorting(int row)
