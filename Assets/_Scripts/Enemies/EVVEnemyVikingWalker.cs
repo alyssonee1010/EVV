@@ -60,6 +60,7 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     float fallbackAttackTimer;
     float afterKillTimer;
     float dodgeTimer;
+    float pauseTimer;
     EVVCharmLure charmTarget;
     EVVCharmLure carriedLure;
     EVVCharmLure resistedLure;
@@ -75,6 +76,12 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
     public int LaneIndex { get; private set; }
     public EVVHealth Health => health;
     public bool IsDodgingMelee => dodgeTimer > 0f;
+
+    // Held still by something outside, like a jump over a hole that moves him itself.
+    public void PauseWalk(float seconds)
+    {
+        pauseTimer = Mathf.Max(pauseTimer, seconds);
+    }
 
     public float MoveSpeed
     {
@@ -136,6 +143,12 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
 
         if (!hasTarget || health == null || !health.IsAlive)
         {
+            return;
+        }
+
+        if (pauseTimer > 0f)
+        {
+            pauseTimer -= Time.deltaTime;
             return;
         }
 
@@ -262,9 +275,15 @@ public class EVVEnemyVikingWalker : MonoBehaviour, IEVVEnemyLaneWalker
             && (attackTargetDefender == null || (attackTargetDefender.isActiveAndEnabled && attackTargetDefender.IsTargetable));
     }
 
-    // The carrier's death is the lure's cue to run: it happens before the Viking is destroyed,
-    // so the lure can leave his hierarchy in time.
     void OnDied(EVVHealth deadHealth)
+    {
+        LetGo();
+    }
+
+    // Out of the fight for good, dead or fallen into a hole: the lure he carries runs off, the one
+    // he is after is released to the others. Happens before the Viking is destroyed, so the lure can
+    // leave his hierarchy in time.
+    public void LetGo()
     {
         if (hasCharmTarget && charmTarget != null)
         {

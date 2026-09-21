@@ -11,6 +11,9 @@ public class EEVScatterInTween : MonoBehaviour
     [SerializeField] float scatterDurationSeconds = 2f;
     [SerializeField] Ease easeFunciton = Ease.OutSine;
 
+    // Seconds from enabling until the last child has landed.
+    public float TotalSeconds => startDelay + scatterDurationSeconds + fallTime;
+
     void Start()
     {
         foreach (Transform child in transform)

@@ -9,6 +9,7 @@ public class EEVTrapDigger : MonoBehaviour
     [SerializeField] Transform leaveHoleLandingPos;
     [SerializeField] UnityEvent onHoleDug;
     [SerializeField] UnityEvent onHoleLeft;
+    [SerializeField] UnityEvent onCoverPlaced;
     [SerializeField] float walkSpeed = 1f;
 
 
@@ -16,10 +17,23 @@ public class EEVTrapDigger : MonoBehaviour
     void Start()
     {
         Sink().OnComplete(() => {
+            if (this == null) return; // killed while digging
             onHoleDug.Invoke();
             LeaveHole().OnComplete(() => {
+                if (this == null) return;
                 onHoleLeft.Invoke();
-                WalkLeftOffScreen();
+                // Out of the hole he lays the cover over it, and only once every piece is down is the
+                // hole the trap: it stops taking hits and swallows the next Vikings. Killed before that,
+                // the hole just fills itself back up.
+                EVVTrapHole hole = GetComponentInParent<EVVTrapHole>();
+                float coverSeconds = hole != null ? hole.PlaceCover() : 0f;
+                PrimeTween.Tween.Delay(transform, coverSeconds, () => {
+                    if (this == null) return;
+                    if (hole != null) hole.Arm();
+                    onCoverPlaced.Invoke();
+                    // No renderer on this object, so OnBecameInvisible never fires; leave once the walk is over.
+                    WalkLeftOffScreen().OnComplete(() => { if (this != null) Destroy(gameObject); });
+                }, warnIfTargetDestroyed: false);
             });
         });
     }
@@ -42,5 +56,11 @@ public class EEVTrapDigger : MonoBehaviour
 
     void OnBecameInvisible() {
         Destroy(gameObject);
+    }
+
+    // Killed mid-dig: stop the sink/walk tweens on this transform so their OnComplete callbacks are
+    // not reported as lost.
+    void OnDestroy() {
+        PrimeTween.Tween.StopAll(onTarget: transform);
     }
 }

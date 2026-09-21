@@ -210,8 +210,8 @@ Transform:
   m_GameObject: {fileID: 147748767010111480}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.104499936, y: 0.44750002, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.1065, y: 0.4271, z: 0}
+  m_LocalScale: {x: 0.86498106, y: 1.0546262, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7462612961246547838}
@@ -803,18 +803,21 @@ MonoBehaviour:
   onHoleLeft:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7070291441084781131}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 6387238283281470604}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: TrapDigger_Dig
           m_BoolArgument: 1
         m_CallState: 2
+  onCoverPlaced:
+    m_PersistentCalls:
+      m_Calls:
       - m_Target: {fileID: 6387238283281470604}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: Play
@@ -2111,14 +2114,14 @@ RectTransform:
   m_GameObject: {fileID: 4894661614878113749}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7221001288115296996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.12299998, y: -1.306}
+  m_AnchoredPosition: {x: 0.124, y: -1.355}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!331 &3255533398205696519
@@ -2946,6 +2949,7 @@ GameObject:
   - component: {fileID: 2233239111017874913}
   - component: {fileID: 8352693179857865106}
   - component: {fileID: 2425206327896525911}
+  - component: {fileID: 1019029847336103327}
   m_Layer: 0
   m_Name: TrapDigger
   m_TagString: Untagged
@@ -2962,7 +2966,7 @@ Transform:
   m_GameObject: {fileID: 5957723828494886328}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.05, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2986,7 +2990,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EVVHealth
   maxHealth: 100
-  destroyWhenDead: 1
+  destroyWhenDead: 0
   onTakeDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -3002,8 +3006,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2872673eaef36cd45842ab6b3292e6ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EVVDefender
-  cost: 8
+  cost: 6
   maxHealth: 100
+  depthOffset: 0.2
 --- !u!210 &2425206327896525911
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -3017,6 +3022,42 @@ SortingGroup:
   m_SortingOrder: 0
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
+--- !u!114 &1019029847336103327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5957723828494886328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc415f81ebdb5684380fe4ae3e447e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EVVTrapHole
+  holeMask: {fileID: 3255533398205696519}
+  holeSprite: {fileID: 5863468840970289268}
+  cover: {fileID: 7070291441084781131}
+  triggerHalfWidth: 0.35
+  hideMargin: 0.35
+  fallSeconds: 0.55
+  groupWindowSeconds: 0.2
+  fallTrigger: Fall
+  fallbackFallTrigger: Stun
+  regenerationSeconds: 60
+  jumpStartOffset: 0.8
+  jumpLandOffset: 0.8
+  jumpHeight: 0.7
+  jumpSeconds: 0.5
+  jumpTrigger: Jump
+  onArmed:
+    m_PersistentCalls:
+      m_Calls: []
+  onSprung:
+    m_PersistentCalls:
+      m_Calls: []
+  onRegenerationStarted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6321195109402164231
 GameObject:
   m_ObjectHideFlags: 0
