@@ -52,6 +52,8 @@ public class EVVTrapHole : MonoBehaviour
     readonly List<MonoBehaviour> candidates = new List<MonoBehaviour>();
     readonly Dictionary<MonoBehaviour, float> lastWalkerX = new Dictionary<MonoBehaviour, float>();
     readonly List<MonoBehaviour> staleWalkers = new List<MonoBehaviour>();
+    // Walkers that were already over the hole when it opened (the one who just killed the digger).
+    readonly List<MonoBehaviour> standingOnHole = new List<MonoBehaviour>();
 
     void Awake()
     {
@@ -140,8 +142,8 @@ public class EVVTrapHole : MonoBehaviour
     void ScanForFallers(float reach)
     {
         candidates.Clear();
-        CollectFallers(EVVTargetRegistry.Enemies, reach);
-        CollectFallers(EVVTargetRegistry.CharmedEnemies, reach);
+        CollectWithinReach(EVVTargetRegistry.Enemies, reach);
+        CollectWithinReach(EVVTargetRegistry.CharmedEnemies, reach);
 
         // Swallowing disables the walker, which drops it from the list being scanned.
         for (int i = 0; i < candidates.Count; i++)
@@ -150,7 +152,7 @@ public class EVVTrapHole : MonoBehaviour
         }
     }
 
-    void CollectFallers(IReadOnlyList<IEVVEnemyLaneWalker> walkers, float reach)
+    void CollectWithinReach(IReadOnlyList<IEVVEnemyLaneWalker> walkers, float reach)
     {
         float holeX = HoleCenter.x;
         for (int i = 0; i < walkers.Count; i++)
@@ -351,6 +353,13 @@ public class EVVTrapHole : MonoBehaviour
         state = State.Regenerating;
         regenerationRemaining = regenerationSeconds;
         lastWalkerX.Clear();
+        // Whoever is standing over the hole as it opens jumps it once he walks on, instead of
+        // strolling across; a newcomer has to cross a take-off line.
+        candidates.Clear();
+        CollectWithinReach(EVVTargetRegistry.Enemies, jumpHalfWidth);
+        CollectWithinReach(EVVTargetRegistry.CharmedEnemies, jumpHalfWidth);
+        standingOnHole.Clear();
+        standingOnHole.AddRange(candidates);
         ReleaseMask();
     }
 
@@ -442,10 +451,14 @@ public class EVVTrapHole : MonoBehaviour
             }
 
             float x = behaviour.transform.position.x;
-            if (lastWalkerX.TryGetValue(behaviour, out float previousX)
-                && ((previousX > rightLine && x <= rightLine) || (previousX < leftLine && x >= leftLine)))
+            if (lastWalkerX.TryGetValue(behaviour, out float previousX))
             {
-                candidates.Add(behaviour);
+                bool crossedIn = (previousX > rightLine && x <= rightLine) || (previousX < leftLine && x >= leftLine);
+                bool walkedOn = standingOnHole.Contains(behaviour) && Mathf.Abs(x - holeX) < Mathf.Abs(previousX - holeX);
+                if (crossedIn || walkedOn)
+                {
+                    candidates.Add(behaviour);
+                }
             }
 
             lastWalkerX[behaviour] = x;
@@ -457,6 +470,7 @@ public class EVVTrapHole : MonoBehaviour
     void Jump(MonoBehaviour walker)
     {
         lastWalkerX.Remove(walker);
+        standingOnHole.Remove(walker);
         ((IEVVEnemyLaneWalker)walker).PauseWalk(jumpSeconds);
         Transform body = walker.transform;
         float side = body.position.x < HoleCenter.x ? 1f : -1f;
