@@ -22,8 +22,10 @@ public class EVVTrapHole : MonoBehaviour
     [SerializeField] GameObject cover;
 
     [Header("Falling in")]
-    [Tooltip("Half width of the strip over the hole (world units) a Viking's feet have to enter to fall.")]
+    [Tooltip("Half width of the strip over the hole (world units) a Viking's feet have to enter to break the cover.")]
     [SerializeField, Min(0.01f)] float triggerHalfWidth = 0.35f;
+    [Tooltip("Once the cover breaks, everyone whose feet are this close to the hole's centre goes down with him.")]
+    [SerializeField, Min(0.01f)] float groupHalfWidth = 0.8f;
     [Tooltip("How far a Viking sinks while he shrinks away to nothing. Keep it within the digger's mask (1.6 deep), which hides everything below the rim.")]
     [SerializeField, Min(0.1f)] float fallDepth = 1f;
     [SerializeField, Min(0.05f)] float fallSeconds = 0.55f;
@@ -108,13 +110,18 @@ public class EVVTrapHole : MonoBehaviour
         switch (state)
         {
             case State.Armed:
-                ScanForFallers();
+                ScanForFallers(triggerHalfWidth);
+                // The cover just broke: everyone else standing over the hole goes down with him.
+                if (state == State.Sprung)
+                {
+                    ScanForFallers(groupHalfWidth);
+                }
                 break;
             case State.Sprung:
                 windowRemaining -= Time.deltaTime;
                 if (windowRemaining > 0f)
                 {
-                    ScanForFallers();
+                    ScanForFallers(groupHalfWidth);
                 }
                 else if (Time.time >= lastFallEnds)
                 {
@@ -129,12 +136,12 @@ public class EVVTrapHole : MonoBehaviour
 
     // ---------------------------------------------------------------- falling in
 
-    // Anyone stepping onto the cover goes in, a Viking carrying the lure back out just the same.
-    void ScanForFallers()
+    // Anyone within reach of the hole's centre goes in, a Viking carrying the lure back out just the same.
+    void ScanForFallers(float reach)
     {
         candidates.Clear();
-        CollectFallers(EVVTargetRegistry.Enemies);
-        CollectFallers(EVVTargetRegistry.CharmedEnemies);
+        CollectFallers(EVVTargetRegistry.Enemies, reach);
+        CollectFallers(EVVTargetRegistry.CharmedEnemies, reach);
 
         // Swallowing disables the walker, which drops it from the list being scanned.
         for (int i = 0; i < candidates.Count; i++)
@@ -143,13 +150,13 @@ public class EVVTrapHole : MonoBehaviour
         }
     }
 
-    void CollectFallers(IReadOnlyList<IEVVEnemyLaneWalker> walkers)
+    void CollectFallers(IReadOnlyList<IEVVEnemyLaneWalker> walkers, float reach)
     {
         float holeX = HoleCenter.x;
         for (int i = 0; i < walkers.Count; i++)
         {
             if (IsWalkingHere(walkers[i], out MonoBehaviour behaviour)
-                && Mathf.Abs(behaviour.transform.position.x - holeX) <= triggerHalfWidth)
+                && Mathf.Abs(behaviour.transform.position.x - holeX) <= reach)
             {
                 candidates.Add(behaviour);
             }

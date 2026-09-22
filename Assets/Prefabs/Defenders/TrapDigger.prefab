@@ -3038,6 +3038,7 @@ MonoBehaviour:
   holeSprite: {fileID: 5863468840970289268}
   cover: {fileID: 7070291441084781131}
   triggerHalfWidth: 0.35
+  groupHalfWidth: 0.8
   fallDepth: 1
   fallSeconds: 0.55
   groupWindowSeconds: 0.2
