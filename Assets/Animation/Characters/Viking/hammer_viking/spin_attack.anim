@@ -1658,7 +1658,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SortingOrder
-    path: Ebene 31
+    path: body/upper_body/hammer/hammer_weapon
     classID: 212
     script: {fileID: 0}
     flags: 16
@@ -1741,7 +1741,7 @@ AnimationClip:
       isSerializeReferenceCurve: 0
       metaData: 0
     - serializedVersion: 2
-      path: 4149034290
+      path: 3500358072
       attribute: 3762991556
       script: {fileID: 0}
       typeID: 212
@@ -3496,7 +3496,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SortingOrder
-    path: Ebene 31
+    path: body/upper_body/hammer/hammer_weapon
     classID: 212
     script: {fileID: 0}
     flags: 16
