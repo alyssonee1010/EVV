@@ -1,16 +1,19 @@
 // Override shader used by EVVSilhouetteOutlineFeature to render the "key" texture the
 // outline is computed from. Every sprite of the sorting layer writes how close it is to
-// the camera (R, lane depth), its outline id (G, 0 for sprites without an outline) and
-// its sorting order (B). Outline id and sorting order arrive per renderer through the
-// MaterialPropertyBlock that EVVSilhouetteOutline sets.
+// the camera (R, lane depth) and whether it belongs to an outlined character (G).
+//
+// _OutlineId is a plain material property, NOT per-renderer data: the feature draws the
+// outlined sprites and everything else as two separate renderer lists with a different
+// material each, so the value is constant within a draw. Carrying it per renderer through
+// a MaterialPropertyBlock instead breaks sprite batching and measured ~8 ms of extra
+// frame time at 60 characters.
 Shader "Hidden/Sprites/Silhouette Outline Key"
 {
 	Properties
 	{
 		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
 		_Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.5
-		[PerRendererData] _OutlineId ("Outline Id", Float) = 0
-		[PerRendererData] _OutlineOrder ("Sorting Order", Float) = 0
+		_OutlineId ("Outline Id (0 = occluder only, 1 = outlined)", Float) = 0
 	}
 
 	SubShader
@@ -18,8 +21,10 @@ Shader "Hidden/Sprites/Silhouette Outline Key"
 		Tags { "RenderPipeline"="UniversalPipeline" }
 
 		Cull Off
-		ZWrite Off
-		ZTest Always
+		// Depth is written so the feature's two renderer lists (outlined sprites and
+		// occluders) resolve against each other by lane depth, not by draw order.
+		ZWrite On
+		ZTest LEqual
 		Blend Off
 
 		Pass
@@ -56,7 +61,6 @@ Shader "Hidden/Sprites/Silhouette Outline Key"
 			CBUFFER_START(UnityPerMaterial)
 				half _Cutoff;
 				float _OutlineId;
-				float _OutlineOrder;
 			CBUFFER_END
 
 			// Same vertex setup as URP's Sprite-Unlit-Default, so skinned and flipped sprites match the main render.
@@ -85,9 +89,7 @@ Shader "Hidden/Sprites/Silhouette Outline Key"
 				// Closeness to the camera: larger is nearer, 0 means nothing was drawn.
 				// World z -10..10 maps to 1..0, which covers the lane depths (0.5..5.5).
 				half closeness = saturate(0.5 - input.alphaDepth.y * 0.05);
-				half id = _OutlineId / 255.0;
-				half order = (clamp(_OutlineOrder, -128.0, 127.0) + 128.0) / 255.0;
-				return half4(closeness, id, order, 1);
+				return half4(closeness, _OutlineId, 0, 1);
 			}
 			ENDHLSL
 		}

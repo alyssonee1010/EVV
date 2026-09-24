@@ -6559,6 +6559,14 @@ MonoBehaviour:
     prefab: {fileID: 1586307272624819258, guid: 4e073c48322896040b6f4e35d550dd94, type: 3}
     maxHealth: 140
     moveSpeed: 0.9
+  - unitId: hammer_viking
+    prefab: {fileID: 4498983757120432570, guid: 1d9961529a8a87d4c841c6f9a898a70d, type: 3}
+    maxHealth: 224
+    moveSpeed: 0.63
+  - unitId: speed_viking
+    prefab: {fileID: 6180913474721174678, guid: a1cbb9ffdd3bc894b907cd5bfe1d089b, type: 3}
+    maxHealth: 98
+    moveSpeed: 1.7099999
   flagWaveMessage: ELITE WAVE INCOMING
   finalWaveMessage: FINAL WAVE
   levelCompleteMessage: LEVEL COMPLETE

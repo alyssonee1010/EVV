@@ -99,16 +99,13 @@ Shader "Hidden/Sprites/Silhouette Outline"
 				return o;
 			}
 
-			// True when the sprite stored in `other` is drawn in front of the one in `center`:
-			// nearer lane, or same lane and higher sorting order.
+			// True when the sprite stored in `other` is drawn in front of the one in `center`,
+			// which for this game means a nearer lane. Sorting order is deliberately not
+			// compared: the key carries one id per character rather than per limb, so parts of
+			// the same character never outline each other and the result is a single silhouette.
 			bool IsInFront(float4 other, float4 center)
 			{
-				if (other.r > center.r + KEY_STEP)
-				{
-					return true;
-				}
-
-				return abs(other.r - center.r) <= KEY_STEP && other.b > center.b + KEY_STEP;
+				return other.r > center.r + KEY_STEP;
 			}
 
 			half4 OutlineFragment(Varyings input) : SV_Target
@@ -118,6 +115,9 @@ Shader "Hidden/Sprites/Silhouette Outline"
 				float2 uv = input.positionCS.xy * _OutlineParams.xy;
 				float4 center = SAMPLE_TEXTURE2D_X_LOD(_SilhouetteKeyTex, sampler_PointClamp, uv, 0);
 				float radius = _OutlineParams.z;
+				// The key may be rendered smaller than the screen, so a ring step is one of its
+				// texels, not one screen pixel.
+				float2 keyTexel = _OutlineParams.xy / _OutlineParams.w;
 
 				// The nearest texel that belongs to an outlined part in front of this pixel
 				// decides the coverage; texels near the edge of the radius fade out, which
@@ -133,7 +133,7 @@ Shader "Hidden/Sprites/Silhouette Outline"
 						break;
 					}
 
-					float4 key = SAMPLE_TEXTURE2D_X_LOD(_SilhouetteKeyTex, sampler_PointClamp, uv + offset * _OutlineParams.xy, 0);
+					float4 key = SAMPLE_TEXTURE2D_X_LOD(_SilhouetteKeyTex, sampler_PointClamp, uv + offset * keyTexel, 0);
 					bool outlined = key.g > KEY_STEP;
 					bool otherGroup = abs(key.g - center.g) > KEY_STEP;
 					if (outlined && otherGroup && IsInFront(key, center))

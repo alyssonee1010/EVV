@@ -3,69 +3,32 @@ using UnityEngine;
 
 /// <summary>
 /// Marks the sprites of this character for the outline that EVVSilhouetteOutlineFeature
-/// draws. Add it to a character whose art has no drawn outline. Health bar sprites are
-/// left out.
+/// draws: one line around the whole character, never between its own parts. Add it to a
+/// character whose art has no drawn outline. Health bar sprites are left out.
 ///
-/// Sprites that are not listed in a group form the body and share one outline. Each
-/// group is a limb (an arm with its joint pieces, a leg, the head) that keeps its own
-/// outline where it moves in front of or behind other groups of the same character, while
-/// the pieces inside a group never outline each other.
+/// The mark is a rendering layer bit on each renderer, which the feature filters the key
+/// pass by. It is deliberately not a MaterialPropertyBlock: per-renderer property data
+/// breaks sprite batching and measured about 8 ms of extra frame time at 60 characters,
+/// which was most of what the outline used to cost.
 /// </summary>
 [DisallowMultipleComponent]
 public class EVVSilhouetteOutline : MonoBehaviour
 {
-    [System.Serializable]
-    public class Group
-    {
-        public string name;
-        public SpriteRenderer[] renderers;
-    }
+    /// <summary>Rendering layer bit that marks a sprite as outlined. Must match the feature.</summary>
+    public const uint OutlinedRenderingLayer = 1u << 1;
 
-    // The key texture stores the id in 8 bits: 31 character slots x 8 groups.
-    const int MaxGroups = 7;
-    const int CharacterSlots = 31;
     const string HealthBarRootName = "Health Bar";
 
-    static readonly int OutlineIdId = Shader.PropertyToID("_OutlineId");
-    static readonly int OutlineOrderId = Shader.PropertyToID("_OutlineOrder");
-    static int nextCharacterSlot;
-
-    [Tooltip("Limbs that keep their own outline where they cross other parts of this character. Sprites not listed here form the body.")]
-    [SerializeField] Group[] groups;
-
     // Enabled markers, for the renderer feature: it skips its passes while nothing is
-    // outlined (menus, loadout screen) and only draws the outline around these characters.
+    // outlined (menus, loadout screen) and uses these to size the outline quads.
     public static readonly List<EVVSilhouetteOutline> Active = new List<EVVSilhouetteOutline>();
 
     readonly List<SpriteRenderer> renderers = new List<SpriteRenderer>();
-    readonly List<MaterialPropertyBlock> blocks = new List<MaterialPropertyBlock>();
-    readonly List<int> ids = new List<int>();
-    readonly List<int> orders = new List<int>();
+    readonly List<uint> originalMasks = new List<uint>();
 
     void OnEnable()
     {
         Active.Add(this);
-
-        int characterSlot = 1 + nextCharacterSlot % CharacterSlots;
-        nextCharacterSlot++;
-
-        Dictionary<SpriteRenderer, int> groupIndices = new Dictionary<SpriteRenderer, int>();
-        int groupCount = groups != null ? Mathf.Min(groups.Length, MaxGroups) : 0;
-        for (int i = 0; i < groupCount; i++)
-        {
-            if (groups[i]?.renderers == null)
-            {
-                continue;
-            }
-
-            foreach (SpriteRenderer renderer in groups[i].renderers)
-            {
-                if (renderer != null)
-                {
-                    groupIndices[renderer] = i + 1;
-                }
-            }
-        }
 
         foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>(true))
         {
@@ -74,38 +37,29 @@ public class EVVSilhouetteOutline : MonoBehaviour
                 continue;
             }
 
-            groupIndices.TryGetValue(renderer, out int groupIndex);
             renderers.Add(renderer);
-            blocks.Add(new MaterialPropertyBlock());
-            ids.Add(characterSlot * (MaxGroups + 1) + groupIndex);
-            orders.Add(int.MinValue);
+            originalMasks.Add(renderer.renderingLayerMask);
+            // Replaced, not or-ed: the feature draws outlined sprites and occluders as two
+            // disjoint renderer lists, and a rendering layer mask can only be matched, not
+            // excluded, so an outlined sprite must not also match the occluder list.
+            renderer.renderingLayerMask = OutlinedRenderingLayer;
         }
-
-        PushProperties();
     }
 
     void OnDisable()
     {
         Active.Remove(this);
 
-        foreach (SpriteRenderer renderer in renderers)
+        for (int i = 0; i < renderers.Count; i++)
         {
-            if (renderer != null)
+            if (renderers[i] != null)
             {
-                renderer.SetPropertyBlock(null);
+                renderers[i].renderingLayerMask = originalMasks[i];
             }
         }
 
         renderers.Clear();
-        blocks.Clear();
-        ids.Clear();
-        orders.Clear();
-    }
-
-    // After the animator has updated the sorting orders of the parts.
-    void LateUpdate()
-    {
-        PushProperties();
+        originalMasks.Clear();
     }
 
     /// <summary>World bounds of the outlined sprites; false while none is visible.</summary>
@@ -132,24 +86,6 @@ public class EVVSilhouetteOutline : MonoBehaviour
         }
 
         return found;
-    }
-
-    void PushProperties()
-    {
-        for (int i = 0; i < renderers.Count; i++)
-        {
-            SpriteRenderer renderer = renderers[i];
-            if (renderer == null || renderer.sortingOrder == orders[i])
-            {
-                continue;
-            }
-
-            orders[i] = renderer.sortingOrder;
-            MaterialPropertyBlock block = blocks[i];
-            block.SetFloat(OutlineIdId, ids[i]);
-            block.SetFloat(OutlineOrderId, orders[i]);
-            renderer.SetPropertyBlock(block);
-        }
     }
 
     bool IsHealthBarRenderer(SpriteRenderer renderer)
